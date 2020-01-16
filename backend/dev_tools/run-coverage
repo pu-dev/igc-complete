@@ -1,0 +1,6 @@
+#!/bin/bash
+
+MAIN_DIR=$(git rev-parse --show-toplevel)
+coverage run --source='.' --omit=${MAIN_DIR}/jog-p3-env/* ${MAIN_DIR}/manage.py test
+coverage report
+coverage html

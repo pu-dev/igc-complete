@@ -1,0 +1,2 @@
+#!/bin/bash
+$(git rev-parse --show-toplevel)/backend/manage.py runserver 0.0.0.0:7000

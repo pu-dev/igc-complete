@@ -1,0 +1,38 @@
+#!/bin/bash
+
+DB_FILE="db.sqlite3"
+MAIN_DIR="$(git rev-parse --show-toplevel)/backend"
+DEPLOYMENT_SCRIPT_DIR="${MAIN_DIR}/deployment"
+TMP_DIR="${MAIN_DIR}/tmp"
+
+function show() {
+   echo ----------------------------
+   echo $*
+   echo -----------------------------
+}
+
+# if [[ "$#" -ne 1 ]]; then
+#    cat << EOF
+
+# You need to run for:
+
+# - production:  ./setup prod
+# - development: ./setup dev
+
+# EOF
+#    exit 0
+# fi 
+
+if [[ "$#" -ne 1 ]]; then
+    DB_SETUP_SCRIPT="dbsetup_dev.py"
+else
+    DB_SETUP_SCRIPT="dbsetup_${1}.py"
+fi 
+
+pushd ${MAIN_DIR} &> /dev/null
+
+[ -f "${DB_FILE}" ] && mv "${DB_FILE}" "${TMP_DIR}/${DB_FILE}".$(date +'%Y%m%d_%H%M%S')
+
+./manage.py makemigrations api > /dev/null
+./manage.py migrate > /dev/null
+./manage.py shell < "${DEPLOYMENT_SCRIPT_DIR}/${DB_SETUP_SCRIPT}"
