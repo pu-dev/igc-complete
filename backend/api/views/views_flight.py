@@ -3,50 +3,55 @@ from rest_framework import parsers
 from rest_framework import response
 from rest_framework import status
 from rest_framework import views
-from api import igc
-from api.serializers.serializers_igc import FlightHeaderSerializer
-from api.serializers.serializers_igc import FlightTrackSerializer
+from rest_framework import viewsets
+
+from api.igc import IGC
+from api.serializers.serializers_igc import FlightSerializer
+from api.models import models_flight
+
 
 logger = logging.getLogger(__name__)
 
-logger = logging.getLogger(__name__)
 
-
-class FileUploadView(views.APIView):
+class FlighUploadView(views.APIView):
     parser_classes = (parsers.FileUploadParser, )
+    serializer_class = FlightSerializer
 
-    def post(self, request, filename, format=None):
+    def post(self, request, format=None):
         file = request.data.get('file')
 
-        igc_header = igc.Header()
-        igc_track = igc.Track()
+        igc = IGC(file)
 
-        obj_map = {
-            'H' : igc_header,
-            'B' : igc_track
-        }
+        igc_data = {}
+        igc_data.update(igc.header.data)
+        igc_data['fixes'] = igc.track.data
 
-        for record in file:
-            record = record.decode('ascii')
-            record_type = record[0]
-           
-            if record_type in obj_map:
-                obj_map.get(record_type).add_record(record) 
-            else:
-                logger.warning(
-                    "Unknown IGC record type: {}, "
-                    "raw record: {}".format(record_type, record))
-
-        header_serializer = FlightHeaderSerializer(data=igc_header.data)
-        header_serializer.is_valid(raise_exception=True)
-        flight_header = header_serializer.save()
-
-        track_serializer = FlightTrackSerializer(data=igc_track.data(), many=True)
-        track_serializer.is_valid(raise_exception=True)
-        track = track_serializer.save(flight_id=flight_header.id)
+        serializer = self.serializer_class(data=igc_data)
+        serializer.is_valid(raise_exception=True)
+        flight = serializer.save()
 
         return response.Response(
-            header_serializer.data,
+            serializer.data,
             status=status.HTTP_201_CREATED
         )
 
+
+class FlightView(viewsets.ModelViewSet):
+    """
+    Views for listing jogs for a given user.
+    """
+    queryset = models_flight.Flight.objects.all()
+    serializer_class = FlightSerializer
+    # permission_classes = (IsAuthenticated, PermIsAdmin)
+    # http_method_names = ('post', 'head', 'options')
+
+    # def list(self, request, pk):
+
+    #     if self.test(pk) is False:
+    #         return Response(
+    #             {"error": "User not found."},
+    #             status=status.HTTP_404_NOT_FOUND
+    #         )
+
+    #     self.queryset = self.queryset.filter(owner__id=pk)
+    #     return super().list(request)

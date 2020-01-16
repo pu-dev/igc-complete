@@ -2,3 +2,4 @@ __pycache__
 backend/api/migrations
 backend/tmp
 p3
+db.sqlite3

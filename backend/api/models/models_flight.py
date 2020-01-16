@@ -16,7 +16,7 @@ class Fix(models.Model):
         VALID = 'valid'
         WARNING = 'nav-warning'
 
-    flight = models.ForeignKey(Flight, on_delete=models.CASCADE)
+    flight = models.ForeignKey(Flight, related_name='fixes', on_delete=models.CASCADE)
 
     time = models.TimeField()
 

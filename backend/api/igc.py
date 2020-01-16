@@ -1,7 +1,16 @@
 import logging
 import re
 
-class Header:
+class IGCPart:
+    """
+    Base class for all classes which represents certain IGC file sections. 
+    Example of derived classes: Header, Track.
+    """
+    def add_record(self, record):
+        raise('Implement me!')
+
+
+class Header(IGCPart):
     """
     Composes IGC header out of IGC H-records.
     """
@@ -94,7 +103,8 @@ class Fix:
 
 
     def data(self):
-        display_fields = ('time', 'lat', 'lng', 'valid', 'pressuer_alt')
+
+        display_fields = ('time', 'lat', 'lng', 'valid', 'pressuer_alt', 'gps_alt')
         return {
             x : getattr(self, x) for x in display_fields
         }
@@ -109,7 +119,7 @@ class Fix:
         return '; '.join(out)
 
 
-class Track:
+class Track(IGCPart):
     """
     Composes IGC Track out of IGC B-records.
     """
@@ -146,6 +156,7 @@ class Track:
 
         self.fix.append(fix)
 
+    @property
     def data(self):
         return [fix.data() for fix in self.fix]
 
@@ -155,3 +166,65 @@ class Track:
             out.append(str(self.fix[i]))
 
         return '\n'.join(out)
+
+
+class IGC:
+    """
+    Class representation of processed IGC data.
+    """
+
+    logger = logging.getLogger(__name__)
+
+
+    def __init__(self, igc_data):
+        self.__header = Header()
+        self.__track = Track()
+        self.__parse(igc_data)
+
+    def __parse(self, igc_data):
+        obj_map = {
+            'H' : self.header,
+            'B' : self.track
+        }
+
+        for record in igc_data:
+            record = record.decode('ascii')
+            record_type = record[0]
+               
+            if record_type in obj_map:
+                obj_map.get(record_type).add_record(record) 
+            else:
+                self.logger.warning(
+                    "Unknown IGC record type: {}, "
+                    "raw record: {}".format(record_type, record))
+
+    @property
+    def header(self):
+        return self.__header
+
+    @property
+    def track(self):
+        return self.__track
+    
+
+
+
+# def parse_igc_data(igc_data):
+#     igc.Header()
+#     igc.Track()
+
+#     obj_map = {
+#         'H' : header,
+#         'B' : track
+#     }
+
+#     for record in igc_data:
+#         record = record.decode('ascii')
+#         record_type = record[0]
+           
+#         if record_type in obj_map:
+#             obj_map.get(record_type).add_record(record) 
+#         else:
+#             logger.warning(
+#                 "Unknown IGC record type: {}, "
+#                 "raw record: {}".format(record_type, record))
