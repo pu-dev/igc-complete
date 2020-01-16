@@ -1,4 +1,14 @@
 import React from 'react';
+import styled from 'styled-components';
+
+const Button = styled.button`
+  color: palevioletred;
+  font-size: 0.75em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: 2px solid palevioletred;
+  border-radius: 3px;
+`;
 
 
 /*
@@ -19,26 +29,11 @@ class Flight extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <a 
-         onClick={this.handleClick}
+        <Button
+          onClick={this.handleClick}
         >
-         
-        
-
-
-        <div>
-          {this.props.flight.date}
-        </div>
-        <div>
-          {this.props.flight.pilot}
-        </div>
-        <div>
-          {this.props.flight.glider_id}
-        </div>
-        <div>
-          {this.props.flight.glider_type}
-        </div>
-        </a>
+          {this.props.flight.date} {this.props.flight.pilot} {this.props.flight.glider_id} {this.props.flight.glider_type}
+        </Button>
         <br/>
       </React.Fragment>
     )

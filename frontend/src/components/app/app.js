@@ -1,21 +1,24 @@
 import React from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './app.css';
 
-import UI from './components/ui.js'
-import Flights from './components/flights.js'
-import Map from './components/map.js'
+import UI from '../ui/ui.js'
+import Flights from '../flights/flights.js'
+import Map from '../map/map.js';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.handleFlightChange = this.handleFlightChange.bind(this);
-
+    
+    this.state = {
+      flight_id: null
+    }
   }
 
   handleFlightChange(flight_id) {
-    console.log("aspps "+flight_id)
+    this.setState({flight_id: flight_id});
   }
 
   render() {
@@ -30,14 +33,11 @@ class App extends React.Component {
 
           map={
             <Map
-
+              flight_id={this.state.flight_id}
             />
           }
 
-        >
-
-
-        </UI>
+        />
       </React.Fragment>
     )
   }
