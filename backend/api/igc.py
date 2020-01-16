@@ -205,26 +205,4 @@ class IGC:
     @property
     def track(self):
         return self.__track
-    
 
-
-
-# def parse_igc_data(igc_data):
-#     igc.Header()
-#     igc.Track()
-
-#     obj_map = {
-#         'H' : header,
-#         'B' : track
-#     }
-
-#     for record in igc_data:
-#         record = record.decode('ascii')
-#         record_type = record[0]
-           
-#         if record_type in obj_map:
-#             obj_map.get(record_type).add_record(record) 
-#         else:
-#             logger.warning(
-#                 "Unknown IGC record type: {}, "
-#                 "raw record: {}".format(record_type, record))
