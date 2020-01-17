@@ -2,6 +2,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 from api.views import views_flight
 from api.views import views_api
+from api.views import views_analysis
 
 
 urlpatterns = [
@@ -11,7 +12,8 @@ urlpatterns = [
 
     path('flights/<int:pk>/', views_flight.FlightGetView.as_view()),
 
-    path('flights2/<int:pk>/', views_flight.FlightGetView.as_view()),
+    path('flights/<int:pk>/analysis/', views_analysis.AnalysisListView.as_view()),
+
 ]
 
 

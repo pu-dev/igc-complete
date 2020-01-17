@@ -18,12 +18,14 @@ class Flight extends React.Component {
   }
 
   render() {
+    const flight = this.props.flight;
+
     return (
       <React.Fragment>
         <Button
           onClick={this.handleClick}
         >
-          {this.props.flight.date} {this.props.flight.pilot} {this.props.flight.glider_id} {this.props.flight.glider_type}
+          {flight.id} {flight.date} {flight.pilot} {flight.glider_id} {flight.glider_type}
         </Button>
         <br/>
       </React.Fragment>

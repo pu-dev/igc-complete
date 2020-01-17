@@ -28,6 +28,10 @@ class Header(IGCPart):
         'FTY' : 'logger_type',
     }
 
+    
+    pattern_with_colon = re.compile(r'H(?P<source>[A-Z])(?P<mnemonic>[A-Z]{3}).*:(?P<value>[\d\w -]+)')
+    pattern_no_colon = re.compile(r'H(?P<source>[A-Z])(?P<mnemonic>[A-Z]{3})(?P<value>[\d\w -]+)')
+
     def __init__(self):
         self.attr_value = {}
 
@@ -57,8 +61,10 @@ class Header(IGCPart):
                 "raw record: {}".format(mnemonic, record))
             return
 
-        pattern = re.compile(r'H(?P<source>[A-Z])(?P<mnemonic>[A-Z]{3}).*:(?P<value>[\d\w -]+)')
-        matched = pattern.match(record)
+        matched = self.pattern_with_colon.match(record)
+        if matched is None:
+            matched = self.pattern_no_colon.match(record)
+
         if matched is None:
             self.logger.warning(
                 "Found mnemonic: {},"
@@ -85,44 +91,43 @@ class Header(IGCPart):
         return '; '.join(out)
 
 
-class Fix:
-    """
-    Simple IGC Fix data storage class.
-    """
-    def __init__(self, time, lat, lng, valid, pressuer_alt, 
-        gps_alt = None, fix_accurancy = None, engine_rpm = None):
-
-        self.time = '{}:{}:{}'.format(time[0:2], time[2:4], time[4:6])
-        self.lat = lat
-        self.lng = lng
-        self.valid = valid
-        self.pressuer_alt = pressuer_alt
-        self.gps_alt = gps_alt
-        self.fix_accurancy = fix_accurancy
-        self.engine_rpm = engine_rpm
-
-
-    def data(self):
-
-        display_fields = ('time', 'lat', 'lng', 'valid', 'pressuer_alt', 'gps_alt')
-        return {
-            x : getattr(self, x) for x in display_fields
-        }
-
-    def __str__(self):
-
-        display_fields = ('time', 'lat', 'lng', 'valid', 'pressuer_alt', 'gps_alt')
-        out = (
-            '{} : {}'.format(x, getattr(self, x))
-            for x in display_fields
-        )
-        return '; '.join(out)
-
-
 class Track(IGCPart):
     """
     Composes IGC Track out of IGC B-records.
     """
+
+    class Fix:
+        """
+        Simple IGC Fix data storage class.
+        """
+        def __init__(self, time, lat, lng, valid, pressuer_alt, 
+            gps_alt = None, fix_accurancy = None, engine_rpm = None):
+
+            self.time = '{}:{}:{}'.format(time[0:2], time[2:4], time[4:6])
+            self.lat = lat
+            self.lng = lng
+            self.valid = valid
+            self.pressuer_alt = pressuer_alt
+            self.gps_alt = gps_alt
+            self.fix_accurancy = fix_accurancy
+            self.engine_rpm = engine_rpm
+
+
+        def data(self):
+
+            display_fields = ('time', 'lat', 'lng', 'valid', 'pressuer_alt', 'gps_alt')
+            return {
+                x : getattr(self, x) for x in display_fields
+            }
+
+        def __str__(self):
+
+            display_fields = ('time', 'lat', 'lng', 'valid', 'pressuer_alt', 'gps_alt')
+            out = (
+                '{} : {}'.format(x, getattr(self, x))
+                for x in display_fields
+            )
+            return '; '.join(out)
 
     def __init__(self):
         self.fix = []
@@ -145,7 +150,7 @@ class Track(IGCPart):
         if len(record) >= 38:
             fix_accurancy = record[35:38]
 
-        fix = Fix(
+        fix = self.Fix(
             time=time,
             lat=lat,
             lng=lng,
@@ -189,7 +194,15 @@ class IGC:
 
         for record in igc_data:
             if isinstance(record, bytes):
-                record = record.decode('ascii')
+                try:
+                    record = record.decode('utf-8')
+                except Exception as ex:
+                    self.logger.error(
+                        'Failed to decode line: {}. '
+                        'Exception: {}.'.format(record, ex)
+                    )
+                    continue
+
             record_type = record[0]
                
             if record_type in obj_map:

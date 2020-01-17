@@ -132,11 +132,12 @@ LOGGING = {
     'disable_existing_loggers': False,
     'root': {
         'level': 'INFO',
-        'handlers': ['file'],
+        'handlers': ['file', 'console'],
         'propagate': True
     },
     'handlers': {
         'console': {
+            'level': 'ERROR',
             'class': 'logging.StreamHandler',
         },
         'file': {
