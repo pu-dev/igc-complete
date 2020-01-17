@@ -188,7 +188,8 @@ class IGC:
         }
 
         for record in igc_data:
-            record = record.decode('ascii')
+            if isinstance(record, bytes):
+                record = record.decode('ascii')
             record_type = record[0]
                
             if record_type in obj_map:

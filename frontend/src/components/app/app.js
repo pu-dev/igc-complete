@@ -2,9 +2,16 @@ import React from 'react';
 // import logo from './logo.svg';
 import './app.css';
 
-import UI from '../ui/ui.js'
 import Flights from '../flights/flights.js'
-import Map from '../map/map.js';
+import MapUi from '../map/map_ui.js';
+
+
+const Views = Object.freeze({
+    FLIGHTS:   Symbol("flights"),
+    MAP:  Symbol("map"),
+    // GREEN: Symbol("green")
+});
+
 
 class App extends React.Component {
   constructor(props) {
@@ -12,35 +19,49 @@ class App extends React.Component {
 
     this.handleFlightChange = this.handleFlightChange.bind(this);
     
+    this.handleMapBackClick = this.handleMapBackClick.bind(this);
+
     this.state = {
-      flight_id: null
+      flight_id: null,
+      view: Views.FLIGHTS
     }
   }
 
   handleFlightChange(flight_id) {
-    this.setState({flight_id: flight_id});
+    this.setState({
+      flight_id: flight_id,
+      view: Views.MAP});
+  }
+
+  handleMapBackClick() {
+    this.setState({
+      flight_id: null,
+      view: Views.FLIGHTS});
+  }
+
+  renderFlights() {
+    return <Flights onFlightChange={this.handleFlightChange}/>;
+  }
+
+  renderMap() {
+    return <MapUi
+      flight_id={this.state.flight_id}
+      onBackClick={this.handleMapBackClick}
+    />;
   }
 
   render() {
-    return (
-      <React.Fragment>
-        <UI
-          flights={
-            <Flights 
-              onFlightChange={this.handleFlightChange}
-            />
-          }
+    if (this.state.view == Views.FLIGHTS) {
 
-          map={
-            <Map
-              flight_id={this.state.flight_id}
-            />
-          }
-
-        />
-      </React.Fragment>
-    )
+    return this.renderFlights();
+    
   }
+  else
+  {
+    return this.renderMap();
+  }
+}
+
 }
 
 

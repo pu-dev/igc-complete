@@ -50,6 +50,12 @@ class FlightSerializer(serializers.ModelSerializer):
 
         read_only_fields = ('id',)
 
+        extra_kwargs = {
+            'pilot': { 'required': True },
+            'glider_id': { 'required': True },
+            'glider_type': { 'required': False },
+        }
+
     def create(self, validated_data):
         fixes = validated_data.pop('fixes')
         flight = models_flight.Flight.objects.create(**validated_data)
@@ -59,3 +65,24 @@ class FlightSerializer(serializers.ModelSerializer):
             models_flight.Fix.objects.create(**fix)
 
         return flight
+
+
+
+class FlightHeaderSerializer(serializers.ModelSerializer):
+    """
+    Serializer for complete flight (whole IGC file).
+    """
+
+    class Meta:
+        model = models_flight.Flight
+
+        fields = (
+            'id',
+            'date',
+            'pilot',
+            'glider_id',
+            'glider_type'
+        )
+
+        read_only_fields = ('id',)
+

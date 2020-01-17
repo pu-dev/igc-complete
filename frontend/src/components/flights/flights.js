@@ -1,15 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
-
-const Button = styled.button`
-  color: palevioletred;
-  font-size: 0.75em;
-  margin: 1em;
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
-  border-radius: 3px;
-`;
-
+import Config from '../../config.js'
+import Button from '../items/button.js'
 
 /*
 * Flight
@@ -77,10 +68,9 @@ class Flights extends React.Component {
   }
 
   fetchFlights() {
-    fetch("http://localhost:7000/api/1.0/flights/")
+    fetch(Config.url.flights())
       .then(res => res.json())
       .then((data) => {
-          console.log(data)
           this.setState({flights: data})
       })
       .catch(function(error){

@@ -3,3 +3,5 @@ backend/api/migrations
 backend/tmp
 p3
 db.sqlite3
+*.igc
+*.IGC

@@ -159,6 +159,11 @@ LOGGING = {
 }
 
 
+DEVELOPMENT = {
+    'igc_dir': ''.join([BASE_DIR, '/deployment/test_data']),
+    
+}
+
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
     'http://192.168.8.100:3000',

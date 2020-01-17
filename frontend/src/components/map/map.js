@@ -1,8 +1,8 @@
 import React from 'react';
+import styled from 'styled-components';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-
-import styled from 'styled-components';
+import Config from '../../config.js';
 
 const Wrapper = styled.div`
   width: ${props => props.width};
@@ -47,12 +47,15 @@ class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      flight_id: null,
-      flight_data: null
+      flight: null
     };
   }
 
-  componentDidMount() {
+  createMap() {
+   if (typeof this.map != 'undefined') {
+      this.map.remove()
+    }
+
     this.map = L.map('map', {
       center: [58, 16],
       zoom: 14,
@@ -65,14 +68,17 @@ class Map extends React.Component {
       id: 'mapbox.streets',
       accessToken: 'pk.eyJ1IjoicHVyYmFuc2tpNzciLCJhIjoiY2p6eWxoZXFrMTJ3czNkcTlseDFkc2F5YSJ9.disndnZW969IhepNVg6fhA'
     }).addTo(this.map);
+  }
 
+  componentDidMount() {
+    this.fetchFlight();
   }
 
   fetchFlight() {
-    fetch("http://localhost:7000/api/1.0/flights/1/")
+    fetch(Config.url.flight(this.props.flight_id))
       .then(res => res.json())
       .then((data) => {
-        this.setState({flight_data: data});
+        this.setState({flight: data});
         this.flightDidLoad();
       })
       .catch(function(error){
@@ -81,7 +87,9 @@ class Map extends React.Component {
   }
 
   flightDidLoad() {
-    const fixes = this.state.flight_data.fixes;
+    this.createMap()
+
+    const fixes = this.state.flight.fixes;
 
     var lat_lng = [];
     for (var fix of fixes) {

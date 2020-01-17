@@ -2,13 +2,16 @@ from django.db import models
 
 
 class Flight(models.Model):
-    date = models.DateField()
+    date = models.DateField(blank=False)
 
-    pilot = models.CharField(max_length=64, blank=False)
+    pilot = models.CharField(max_length=64, blank=True)
 
-    glider_id = models.CharField(max_length=16, blank=False)
+    glider_id = models.CharField(max_length=16, blank=True)
 
-    glider_type = models.CharField(max_length=32, blank=False)
+    glider_type = models.CharField(max_length=32, blank=True, default="")
+
+    class Meta:
+        ordering = ['-date']
 
 
 class Fix(models.Model):

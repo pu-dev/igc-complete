@@ -6,12 +6,18 @@ from api.views import views_api
 
 urlpatterns = [
     path('upload/', views_flight.FlighUploadView.as_view()),
+
+    path('flights/', views_flight.FlightHeaderListView.as_view()),
+
+    path('flights/<int:pk>/', views_flight.FlightGetView.as_view()),
+
+    path('flights2/<int:pk>/', views_flight.FlightGetView.as_view()),
 ]
 
 
-router = DefaultRouter()
-router.register(r'flights', views_flight.FlightView, basename='flight')
-urlpatterns += router.urls
+# router = DefaultRouter()
+# router.register(r'flights', views_flight.FlightView, basename='flight')
+# urlpatterns += router.urls
 
 
 urlpatterns += [
