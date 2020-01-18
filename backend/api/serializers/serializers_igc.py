@@ -20,7 +20,7 @@ class FlightCreateSerializer(serializers.ModelSerializer):
                 'time',
                 'lat',
                 'lng',
-                'pressuer_alt',
+                'baro_alt',
                 'gps_alt'
                 # 'valid',
             )
@@ -89,7 +89,7 @@ class FlightGetSerializer(serializers.ModelSerializer):
                 'time',
                 'lat',
                 'lng',
-                'pressuer_alt',
+                'baro_alt',
                 'gps_alt'
                 # 'valid',
             )

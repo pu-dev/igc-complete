@@ -27,7 +27,7 @@ class Fix(models.Model):
 
     lng = models.CharField(max_length=9)
 
-    pressuer_alt = models.IntegerField()
+    baro_alt = models.IntegerField()
 
     gps_alt = models.IntegerField(null=True, blank=True)
 
@@ -38,6 +38,10 @@ class Fix(models.Model):
     @property
     def f_lng(self):
         return Coords.lng_to_float(self.lng) 
+
+    @property
+    def coords(self):
+        return Coords(self.lat, self.lng)
 
     @property
     def time_in_seconds(self):

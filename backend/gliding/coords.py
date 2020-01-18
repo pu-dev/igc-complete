@@ -2,13 +2,23 @@ import math
 
 class Coords:
 
-    @staticmethod
-    def FromFix(fix):
-        return Coords(fix.lat, fix.lng)
+    # Each latitude is separated by 111km
+    KM_LAT = 111
+
+    # Distance on equator
+    KM_LONG = 111.321
+
+    # @staticmethod
+    # def FromFix(fix):
+    #     return Coords(fix.lat, fix.lng)
 
     def __init__(self, lat, lng):
         self.__lat = lat
         self.__lng = lng
+
+    def __str__(self):
+        out = 'lat: {}, lng: {}'.format(self.lat, self.lng)
+        return out
 
     def get_bearing(self, dst):
         """
@@ -63,44 +73,32 @@ class Coords:
         
         return d_bearing;
 
-# this.getDistance = function(coordDst) {
+    def get_distance(self, dst):
+        distance = {}
         
-#         var KM_LAT = 111; // each latitude separated 111km apart
-#         var KM_LONG = 111.321; // distance on equator
-        
-#         var distance = {};
-        
-#         {
-#             var latitudeDist = Math.abs(this.latitude - coordDst.latitude) * KM_LAT * 1000;
-#             distance['horizontal'] = latitudeDist;          
-#         }
-        
-#         {   
-#             var latitudeInRad = Math.PI / 180 * (this.latitude + coordDst.latitude) / 2;
-#             var radcos = Math.cos(latitudeInRad);
-        
-#             var longitudeDist = radcos * Math.abs(this.longitude - coordDst.longitude) * KM_LONG * 1000;
-            
-#             distance['vertical'] = longitudeDist;
-#         }
-            
-#         {
-#             var dh = distance['horizontal'];
-#             var dv = distance['vertical'];
-            
-#             var diagDist = Math.sqrt( dh * dh + dv * dv);
-            
-#             distance['diagonal'] = diagDist;
-#         }
-        
-#         {
-#             var pitagoras = Math.sqrt( (this.latitude - coordDst.latitude)**2 + (this.longitude - coordDst.longitude)**2);
-#             distance['pitagoras'] = pitagoras;
-#         }
+        #
+        # Horizontal distance
+        lat_dist = abs(self.lat - dst.lat) * self.KM_LAT * 1000
+        distance['horizontal'] = lat_dist
 
-#         return distance;
-#     }
-#     return this;
+        #
+        # Vertical distance
+        lat_in_rad = math.pi / 180 * (self.lat + dst.lat) / 2;
+        rad_cos = math.cos(lat_in_rad)
+        lng_dist = rad_cos * abs(self.lng - dst.lng) * self.KM_LONG * 1000
+        distance['vertical'] = lng_dist
+
+        #
+        # Diagonal distance
+        diag_dist = math.sqrt(lat_dist**2 + lng_dist**2)
+        distance['diagonal'] = diag_dist
+
+        #
+        # Pitagoras distance
+        pitagoras = math.sqrt((self.lat - dst.lat)**2 + (self.lng - dst.lng)**2)
+        distance['pitagoras'] = pitagoras
+
+        return distance;
     
 
     @property

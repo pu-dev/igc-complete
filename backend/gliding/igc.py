@@ -100,14 +100,14 @@ class Track(IGCPart):
         """
         Simple IGC Fix data storage class.
         """
-        def __init__(self, time, lat, lng, valid, pressuer_alt, 
+        def __init__(self, time, lat, lng, valid, baro_alt, 
             gps_alt = None, fix_accurancy = None, engine_rpm = None):
 
             self.time = '{}:{}:{}'.format(time[0:2], time[2:4], time[4:6])
             self.lat = lat
             self.lng = lng
             self.valid = valid
-            self.pressuer_alt = pressuer_alt
+            self.baro_alt = baro_alt
             self.gps_alt = gps_alt
             self.fix_accurancy = fix_accurancy
             self.engine_rpm = engine_rpm
@@ -115,14 +115,14 @@ class Track(IGCPart):
 
         def data(self):
 
-            display_fields = ('time', 'lat', 'lng', 'valid', 'pressuer_alt', 'gps_alt')
+            display_fields = ('time', 'lat', 'lng', 'valid', 'baro_alt', 'gps_alt')
             return {
                 x : getattr(self, x) for x in display_fields
             }
 
         def __str__(self):
 
-            display_fields = ('time', 'lat', 'lng', 'valid', 'pressuer_alt', 'gps_alt')
+            display_fields = ('time', 'lat', 'lng', 'valid', 'baro_alt', 'gps_alt')
             out = (
                 '{} : {}'.format(x, getattr(self, x))
                 for x in display_fields
@@ -138,7 +138,7 @@ class Track(IGCPart):
         lat = record[7:15]
         lng = record[15:24]
         valid = record[24:25]
-        pressuer_alt = record[25:30]
+        baro_alt = record[25:30]
 
 
         gps_alt = None
@@ -155,7 +155,7 @@ class Track(IGCPart):
             lat=lat,
             lng=lng,
             valid=valid,
-            pressuer_alt=pressuer_alt,
+            baro_alt=baro_alt,
             gps_alt=gps_alt,
             fix_accurancy=fix_accurancy)
 

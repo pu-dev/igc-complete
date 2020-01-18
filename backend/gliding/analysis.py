@@ -2,6 +2,9 @@ import math
 from gliding.circle import Circle
 from gliding.coords import Coords
 
+#
+# This really should be reviewed
+#
 
 class Analyzer:
     FULL_CIRCLE_DEGREE = 360
@@ -35,10 +38,9 @@ class Analyzer:
         for i in range(len(fixes)-2):
             circle_point_index.append(i)
         
-            coords_src = Coords.FromFix(fixes[i])
-            coords_dst = Coords.FromFix(fixes[i+1])
-            coords_dst_next = Coords.FromFix(fixes[i+2])
-
+            coords_src = fixes[i].coords
+            coords_dst = fixes[i+1].coords
+            coords_dst_next = fixes[i+2].coords
 
             d_bearing = coords_src.get_bearing_delta(coords_dst, coords_dst_next)        
             d_angle += d_bearing
@@ -49,8 +51,6 @@ class Analyzer:
             if abs(d_angle) > self.FULL_CIRCLE_DEGREE:
 
                 circle_count += 1
-                print("found cicle no: {}".format(circle_count))
-                print("d angle {}".format(d_angle))
                 d_angle = self.chop_angle_delta(d_angle)
                 
                 circle_point_index.append(i+1)
@@ -67,7 +67,6 @@ class Analyzer:
 
                 if store_circle:
                     circle_points = []
-                    print("storing cirlce with fixes len: {}".format(len(circle_point_index)))
                     for ind in circle_point_index:
                         circle_points.append(fixes[ind])
 
@@ -87,21 +86,21 @@ class Analyzer:
         d_angle = 0
         
         shift_to_index = circle_point_index[len(circle_point_index) - 1]
-        time_start = self.fixes(shift_to_index).time_in_seconds
+        time_start = self.__fixes[shift_to_index].time_in_seconds
         
 
         # todo I believe it should be 2 not 3
         #
-        
+
         for i in range(3, len(circle_point_index))[::-1]:
             
             ind0 = circle_point_index[i]
             ind1 = circle_point_index[i-1]
             ind2 = circle_point_index[i-2]
             
-            coords_src = Coords.FromFix(self.fixes[ind0])
-            coords_dst = Coords.FromFix(self.fixes[ind1])
-            coords_dst_next = Coords.FromFix(self.fixes[ind2])
+            coords_src = Coords.FromFix(self.__fixes[ind0])
+            coords_dst = Coords.FromFix(self.__fixes[ind1])
+            coords_dst_next = Coords.FromFix(self.__fixes[ind2])
 
             
             
@@ -111,14 +110,14 @@ class Analyzer:
             # Check if reset countdown
             # 
 
-            if math.abs(d_angle) > self.CHOP_TAIL_ANGLE_PROBE:
+            if abs(d_angle) > self.CHOP_TAIL_ANGLE_PROBE:
                 d_angle = 0
-                time_start = self.fixes[ind2].time_in_seconds
+                time_start = self.__fixes[ind2].time_in_seconds
                 shift_to_index = circle_point_index[i]
                 continue
 
 
-            time_stop = self.fixes[ind2].time_in_seconds
+            time_stop = self.__fixes[ind2].time_in_seconds
             time_delta = time_start - time_stop
 
             # Check countdown elapsed
