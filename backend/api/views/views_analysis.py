@@ -3,9 +3,10 @@ from rest_framework import response
 from rest_framework import status
 from rest_framework import views
 from gliding.igc import IGC
-from gliding.analysis import Analyzer
+from gliding import circle
 from api.models import models_flight
 from api.serializers.serializers_analysis import AnalysisSerializer
+# from api.serializers.serializers_analysis import S
 
 
 logger = logging.getLogger(__name__)
@@ -24,21 +25,34 @@ class AnalysisListView(views.APIView):
         # Get IGC fixes.
         #
         fixes = self.get_dataset(pk)
-        fixes_data = [fix.dict for fix in fixes]
+        if len(fixes) == 0:
+            return response.Response(
+                {'error': 'Flight id:{}, not found'.format(pk)},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
+        fixes_data = [fix.dict for fix in fixes]
 
         # Get calculated circles.
         #
-        analyzer = Analyzer(fixes)
-        circles  = analyzer.get_circles()
+        circleExtractor = circle.CircleExtractor(fixes)
+        circles  = circleExtractor.get_circles()
 
         circles_data = [
-            dict(id=i, fixes=circles[i].dict) for i in range(len(circles))]
+            circles[i].get_dict(i) for i in range(len(circles))]
+
+        stats = circle.Stats(circles)
    
         data = dict(
             fixes=fixes_data,
-            circles=circles_data
+            circles=circles_data,
+            stats=stats.stats
         )
+
+        # print(stats.stats)
+        # s = S(dat/a = stats.stats.get('diameter_calculated'))
+        # s.is_valid(raise_exception=True)
+        # print(s.data)
 
         serializer = AnalysisSerializer(data=data)
         serializer.is_valid(raise_exception=True)

@@ -3,7 +3,7 @@ import React from 'react';
 import './app.css';
 
 import Flights from '../flights/flights.js'
-import MapUi from '../map/map_ui.js';
+import FlightView from '../../views/flight_view.js';
 
 
 const Views = Object.freeze({
@@ -43,8 +43,8 @@ class App extends React.Component {
     return <Flights onFlightChange={this.handleFlightChange}/>;
   }
 
-  renderMap() {
-    return <MapUi
+  renderFlight() {
+    return <FlightView
       flight_id={this.state.flight_id}
       onBackClick={this.handleMapBackClick}
     />;
@@ -58,7 +58,7 @@ class App extends React.Component {
   }
   else
   {
-    return this.renderMap();
+    return this.renderFlight();
   }
 }
 
