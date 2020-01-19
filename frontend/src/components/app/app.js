@@ -3,12 +3,15 @@ import React from 'react';
 import './app.css';
 
 import Flights from '../flights/flights.js'
-import FlightView from '../../views/flight_view.js';
+import FlightView from '../../views/view_flight.js';
+
+import ViewGraph from '../../views/view_graph.js';
 
 
 const Views = Object.freeze({
     FLIGHTS:   Symbol("flights"),
     MAP:  Symbol("map"),
+    GRAPH_STATS: Symbol("graph_stats"),
     // GREEN: Symbol("green")
 });
 
@@ -21,47 +24,74 @@ class App extends React.Component {
     
     this.handleMapBackClick = this.handleMapBackClick.bind(this);
 
+
+    // Bind clicks
+    this.clickOnViewGraphStats = this.clickOnViewGraphStats.bind(this);
+
     this.state = {
-      flight_id: null,
-      view: Views.FLIGHTS
+      flightId: 4,
+      view: Views.GRAPH_STATS
     }
   }
 
-  handleFlightChange(flight_id) {
+
+  clickOnViewGraphStats(flightId) {
     this.setState({
-      flight_id: flight_id,
+      flightId: flightId,
+      view: Views.GRAPH_STATS});
+  }
+
+  handleFlightChange(flightId) {
+    this.setState({
+      flightId: flightId,
       view: Views.MAP});
   }
 
   handleMapBackClick() {
     this.setState({
-      flight_id: null,
+      flightId: null,
       view: Views.FLIGHTS});
   }
 
-  renderFlights() {
-    return <Flights onFlightChange={this.handleFlightChange}/>;
-  }
 
-  renderFlight() {
-    return <FlightView
-      flight_id={this.state.flight_id}
-      onBackClick={this.handleMapBackClick}
-    />;
+
+
+  displayView() {
+
+    const viewFlights = () => {
+      return <Flights onFlightChange={this.clickOnViewGraphStats}/>;
+    };
+
+    const viewFlightMap = () => {
+      return <FlightView
+        flightId={this.state.flightId}
+        onBackClick={this.handleMapBackClick}
+      />;
+    };
+
+    const viewGraphStats = () => {
+      return <ViewGraph
+        flightId={this.state.flightId}
+
+      />
+    };
+
+
+    var viewsMap = new Map();
+    viewsMap.set(Views.FLIGHTS, viewFlights.bind(this));
+    viewsMap.set(Views.MAP, viewFlightMap.bind(this));
+    viewsMap.set(Views.GRAPH_STATS, viewGraphStats.bind(this));
+
+
+
+    var renderFn = viewsMap.get(this.state.view);
+    return renderFn();
+
   }
 
   render() {
-    if (this.state.view == Views.FLIGHTS) {
-
-    return this.renderFlights();
-    
+    return this.displayView();
   }
-  else
-  {
-    return this.renderFlight();
-  }
-}
-
 }
 
 

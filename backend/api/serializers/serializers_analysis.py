@@ -23,6 +23,7 @@ class StatsPropertySerializer(serializers.Serializer):
     Serializer for single stats property.
     """
     class RangesSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
         range_start = serializers.FloatField()
         range_stop = serializers.FloatField()
         count = serializers.IntegerField()

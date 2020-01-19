@@ -69,7 +69,7 @@ class Circle:
 
     @property
     def diameter_calculated(self):
-        return self.distance / (2*math.pi)
+        return round(self.distance / (2*math.pi), 1)
 
     @property
     def distance(self):
@@ -304,16 +304,17 @@ class Stats:
 
         for i in range(GROUP_COUNT):
             range_stats[i] = dict(
-                range_start=value_delta * i + value_min,
-                range_stop=value_delta * (i+1) + value_min,
+                id=i,
+                range_start=round(value_delta * i + value_min, 1),
+                range_stop=round(value_delta * (i+1) + value_min, 1),
                 count=value_count_in_group[i],
                 percentage=(value_count_in_group[i]*100/value_count)
             )
 
         out = dict(
-            average=value_avg,
-            min=value_min,
-            max=value_max,
+            average=round(value_avg, 1),
+            min=round(value_min, 1),
+            max=round(value_max, 1),
             count=value_count,
             total=value_total,
             ranges=range_stats
