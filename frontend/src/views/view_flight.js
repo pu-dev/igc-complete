@@ -49,19 +49,22 @@ class ViewFlights extends React.Component {
   }
 
   render() {
+    const Div = styled.div`
+      padding-left: 12rem;
+      padding-right: 2rem;
+    `;
+    
     const flights = this.state.flights;
     return (
-      <React.Fragment>
+      <Div>
         <Button onClick={this.onCompare}>
           Compare
         </Button>
-        <PageCenter>
           <FlightsList 
             flights={flights} 
             handleFlightsSelected={this.handleFlightsSelected}
           />
-        </PageCenter>
-      </React.Fragment>
+      </Div>
     )
   }
 }

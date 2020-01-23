@@ -17,15 +17,26 @@ class DBSetupDevelopment:
     @classmethod
     def load_test_flights(cls):
         from igc_complete import settings
-        from api.igc import IGC
+        from gliding.igc import IGC
         from api.serializers import serializers_igc
         from os import listdir
         from os.path import isfile, join
         
+        def is_file_igc(filename):
+            filename = filename.split('.')
+            if len(filename) != 2:
+                return False
+            if filename[-1].lower() != 'igc':
+                return False
+            return True
+
         igc_dir = settings.DEVELOPMENT['igc_dir']
         igc_files = [f for f in listdir(igc_dir) if isfile(join(igc_dir, f))]
 
         for filename in igc_files:
+            if is_file_igc(filename) is False:
+                continue
+
             print('Loading: {}'.format(filename))
             file = open('{}/{}'.format(igc_dir, filename), 'r')
             igc = IGC(file)
@@ -34,7 +45,7 @@ class DBSetupDevelopment:
             igc_data.update(igc.header.data)
             igc_data['fixes'] = igc.track.data
 
-            serializer = serializers_igc.FlightSerializer(data=igc_data)
+            serializer = serializers_igc.FlightCreateSerializer(data=igc_data)
             serializer.is_valid(raise_exception=True)
             flight = serializer.save()
 
