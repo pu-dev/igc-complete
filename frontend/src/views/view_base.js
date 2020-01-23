@@ -4,8 +4,8 @@ import Config from '../config.js';
 
 class ViewBase extends React.Component {
 
- fetchFlightAnalysis(flightId) {
-    return fetch(Config.url.flightAnalysis(this.props.flightId), {
+ fetchUrl(url) {
+    return fetch(url, {
         method: "GET" 
       })
       .then(response => response.json())

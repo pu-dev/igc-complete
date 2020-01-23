@@ -1,18 +1,9 @@
 import React from 'react';
-import ViewBase from './view_base.js';
-import { GraphDiameterCalculated } from '../components/graphs/graph_diameter_calculated.js';
-import { GraphDiameterCalculatedStats }from '../components/graphs/graph_diameter_calculated.js';
-import { GraphDiameterCalculatedSummary }from '../components/graphs/graph_diameter_calculated.js';
-
 import styled from 'styled-components';
-import { ResponsivePie } from '@nivo/pie'
-
-import { ResponsiveBar } from '@nivo/bar'
-
-const Div = styled.div`
-    width: 100%;
-    height: 450px;
-`;
+import Config from '../config.js';
+import ViewBase from './view_base.js';
+import { GraphStatsRanges } from '../components/graphs/graph_diameter_calculated.js';
+import { GraphMediana } from '../components/graphs/graph_diameter_calculated.js';
 
 class ViewGraphStats extends ViewBase {
   constructor(props) {
@@ -20,9 +11,118 @@ class ViewGraphStats extends ViewBase {
   }
 
   componentDidMount() {
-    this.fetchFlightAnalysis().then(
+    // this.fetchUrl(Config.url.flightAnalysis('4/5/6/7/8/9'))
+    this.fetchUrl(Config.url.flightAnalysis('4/5'))
+    .then(
       json => this.setState({analysis:json})
     );
+  }
+
+  renderGridGraph(analysis) {
+    const Grid = styled.div`
+
+      display: grid;
+      @media (max-width: 1200px) {
+        grid-template-columns: 100%;
+        grid-template-rows: minmax(300px, 75%);
+    
+      }
+      @media (min-width: 1200px) {
+        grid-template-columns: 50% 50%;
+        grid-template-rows: minmax(300px, 75%);
+      }
+      grid-auto-flow: rows;
+      grid-auto-rows: 500px;
+    `;
+
+    const graphs = this.renderGraphs(analysis);
+
+    const gridedGraphs = graphs.map((graph) => {
+      return (
+        <Grid>
+          {graph}
+        </Grid>
+      )
+    })
+
+    return(
+      <React.Fragment>
+        {gridedGraphs}
+      </React.Fragment>
+    )
+  }
+
+  renderGraphs(analysis) {
+    var index = 0;
+    
+    const graph_styles = {
+      style_1: "primary",
+      style_2: "success",
+      get: function() {
+        this.style = (this.style == this.style_2 ) ? this.style_1 : this.style_2;
+        return this.style;
+      }
+    }
+
+    const keys = analysis.stats_series_keys;
+    const props_processed = analysis.labels.properties.names;
+
+    return props_processed.map((prop) => {
+
+      const mean_values = analysis.stats_mean[prop].values;
+      const mean_info = analysis.labels.stats_mean.general_info;
+
+      const title = analysis.labels.properties.display_texts[index];
+      
+
+      const labels = ((stat) => {
+        const sub_title = analysis.labels[stat].info;
+        var tmp = analysis.labels[stat][prop];
+        tmp.title = title;
+        tmp.sub_title = sub_title;
+        return tmp;
+      });
+
+      const values = ((stat) => analysis[stat][prop].values);
+
+      index += 1;
+      
+
+      const  graph_style = graph_styles.get()
+      return (
+        <React.Fragment>
+
+          <GraphMediana
+            keys={keys}
+            values={values('stats_mean')}
+            labels={labels('stats_mean')}
+            style={graph_style}
+          />
+          
+          <GraphStatsRanges
+            keys={keys}
+            values={values('stats_ranges_count_weighted')}
+            labels={labels('stats_ranges_count_weighted')}
+            style={graph_style}
+          />
+
+          <GraphStatsRanges
+            keys={keys}
+            values={values('stats_ranges_count')}
+            labels={labels('stats_ranges_count')}
+            style={graph_style}
+          />
+
+          <GraphStatsRanges
+            keys={keys}
+            values={values('stats_ranges_mean_value')}
+            labels={labels('stats_ranges_mean_value')}
+            style={graph_style}
+          />
+
+        </React.Fragment>
+        );
+      });
   }
 
   render() {
@@ -30,35 +130,28 @@ class ViewGraphStats extends ViewBase {
       return <div>Sitting and drawing...</div>
     }
 
-    const circles = this.state.analysis.circles;
-    const ranges = this.state.analysis.stats.diameter_calculated.ranges;
-    const stats = this.state.analysis.stats.diameter_calculated;
-    const summary = [
-      {
-        'var':'minimum',
-        'diameter': stats.min,
-      },
-      {
-        'var':'average',
-        'diameter': stats.average,
-      },
-      {
-        'var':'maximum',
-        'diameter': stats.max,
-      } 
-    ]
+    const Grid = styled.div`
+
+      display: grid;
+      @media (max-width: 1200px) {
+        grid-template-columns: 100%;
+        grid-template-rows: minmax(300px, 75%);
+    
+      }
+      @media (min-width: 1200px) {
+        grid-template-columns: 50% 50%;
+        grid-template-rows: minmax(300px, 75%);
+      }
+      grid-auto-flow: rows;
+      grid-auto-rows: 500px;
+    `;
+
+    const analysis = this.state.analysis;
+    const graphs = this.renderGridGraph(analysis);
 
     return (
       <React.Fragment>
-        <Div>
-          <GraphDiameterCalculatedSummary data={summary}/>
-        </Div>
-        <Div>
-          <GraphDiameterCalculatedStats data={ranges}/>
-        </Div>
-        <Div>
-          <GraphDiameterCalculated data={circles}/>
-        </Div>
+          {graphs}
       </React.Fragment>
     )
   }

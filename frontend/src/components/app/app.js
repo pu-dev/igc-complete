@@ -7,6 +7,7 @@ import FlightView from '../../views/view_flight.js';
 
 import ViewGraph from '../../views/view_graph.js';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Views = Object.freeze({
     FLIGHTS:   Symbol("flights"),
