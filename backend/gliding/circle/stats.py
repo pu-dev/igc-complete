@@ -4,71 +4,17 @@ import logging
 import math
 
 from gliding.circle.circle import Circle
+from .stats_definitions import STATS_DEFINITION
 
 logger = logging.getLogger(__name__)
 
 
-# import collections # requires Python 2.7 -- see note below if you're using an earlier version
-# def merge_dict(d1, d2):
-#     """
-#     Modifies d1 in-place to contain values from d2.  If any value
-#     in d1 is a dictionary (or dict-like), *and* the corresponding
-#     value in d2 is also a dictionary, then merge them in-place.
-#     """
-#     for k,v2 in d2.items():
-#         v1 = d1.get(k) # returns None if v1 has no value for this key
-#         if ( isinstance(v1, collections.Mapping) and 
-#              isinstance(v2, collections.Mapping) ):
-#             merge_dict(v1, v2)
-#         else:
-#             d1[k] = v2
-
-class Stats:
-
+class StatsCalculator:
     FLOAT_PRECISION = 2
-
-    STATS_DEFINITION = (
-        dict(
-            property='diameter_calculated',
-            range=[100, 150, 200, 250, 300],
-
-            label_stats_mean='Diameter bong',
-            label_stats_ranges=' range Diameter bong'
-        ),
-        
-
-        dict(
-            property='vario_average',
-            range=[0.0, 1.0, 2.0, 3.0, 4.0],
-            
-            label_stats_mean='var bong',
-            label_stats_ranges=' range vario bong'
-
-        ),
-        
-        # dict(
-        #     property='vario_average',
-        #     
-        #     label='vario_average bong'
-        # ),
-
-        # vario in time
-
-        # dict(
-            # property='distance',
-            # ranges=[50, 100, 150, 200, 250, 300]
-        # ),
-        # 'distance',
-        # 'height_delta',
-        # 'time_total',
-        # 'vario_average',
-        # 'fixes_count'
-    )
 
     def __init__(self, owned_circles):
         self.__owned_circles = owned_circles
         self.__stats = None
-
 
     @property
     def stats(self):
@@ -89,12 +35,14 @@ class Stats:
         stats = []
         meta = {}
         
-        for stats_def in self.STATS_DEFINITION:
+        for stats_def in STATS_DEFINITION:
             property_stat_ranges = stats_def.get('range')
             circle_property = stats_def.get('property')
+            display_text = stats_def.get('display_text')
 
             meta[circle_property] = dict(
-                range_def=property_stat_ranges
+                range_def=property_stat_ranges,
+                display_text=display_text
             )
 
         for owned_circles in self.__owned_circles:
@@ -118,7 +66,7 @@ class Stats:
 
             stats.append(flight_data)
 
-            for stats_def in self.STATS_DEFINITION:
+            for stats_def in STATS_DEFINITION:
                 property_stat_ranges = stats_def.get('range')
                 circle_property = stats_def.get('property')
                 circles_property_values = [getattr(circle, circle_property) for circle in circles]
@@ -209,25 +157,125 @@ class Stats:
         return stats_generated
 
 
-    @property
-    def stats_for_graphs(self):
-        return dict(
-            stats_properties_processed=self.__search_property_names(),
-            stats_series_keys=self.__search_flight_descriptor(),
-            stats_mean=self.stats_mean,
-            stats_ranges_count=self.stats_ranges_count,
-            stats_ranges_count_weighted=self.stats_ranges_count_weighted,
-            stats_ranges_mean_value=self.stats_ranges_mean_values,
+class StatsDisplayer:
+    LABELS = dict(
+        stats_mean=dict(
+            info="Minimum, average and maximum.",
+            diameter_calculated=dict(
+                info="Mininum, average and maximum circle diameter among all circles.",
+                info_long="",
+                x_axis_legend="",
+                y_axis_legend="circle diameter"
+            ),
+            vario_average=dict(
+                info="Infor for diameterd",
+                sub="bong",
+                x_axis_legend="mean",
+                y_axis_legend="mean"
+            ),
+        ),
+
+        stats_ranges_count=dict(
+            info="Value distribution.",
+            diameter_calculated=dict(
+                info="Number of circles with diameters within a specific diameter range.",
+                info_long=(
+                    "If circle diameter is within "
+                    "specific diameter range (X axis), value for this range "
+                    "(Y axis) is increased by one. "
+                ),
+                x_axis_legend="circle diameter ranges (meters)",
+                y_axis_legend="circles diameters count"
+            ),
+            vario_average=dict(
+                info="Infor for diameterd",
+                sub="bong",
+                x_axis_legend="mean",
+
+                y_axis_legend="mean"
+            ),
+        ),
+
+        stats_ranges_count_weighted=dict(
+            info="Weighted value distribution.",
+            diameter_calculated=dict(
+                info="Percentage of all circles with diameters within a specific diameter range.",
+                info_long=(
+                    "If circle diameter is within "
+                    "specific diameter range (X axis), value for this range "
+                    "is increased by one. Then for each range, "
+                    "amount of circles from that range is devided by the "
+                    "total amount of circles, and multiply by 100 (Y axis)."
+                ),
+                x_axis_legend="circle diameter ranges (meters)",
+                y_axis_legend="circle diameters percentage"
+            ),
+            vario_average=dict(
+                info="Infor for diameterd",
+                sub="bong",
+                x_axis_legend="mean",
+                y_axis_legend="mean"
+            ),
+        ),
+
+        stats_ranges_mean_value=dict(
+            info="Mean value distribution.",
+            diameter_calculated=dict(
+                info="Average value of a circle diameter within a specific range.",
+                info_long=(
+                    "For each circle, find range (Y axis) which matches circle diamater. "
+                    "Then add value of circle diamater to the value of the "
+                    "current value of the found range. Then for each range, devide "
+                    "its value by the amount circles which matched this range. "
+                ),
+                x_axis_legend="circle diameter ranges (meters)",
+                y_axis_legend="circle diameter mean value (in meters)"
+            ),
+            vario_average=dict(
+                info="Infor for diameterd",
+                sub="bong",
+                x_axis_legend="mean",
+                y_axis_legend="mean"
+            ),
+
         )
+    )
+
+    def __init__(self, stats):
+        self.stats = stats
+
+    def __get_property_labels(self):
+
+        prop_names = [None] * len(STATS_DEFINITION)
+        prop_display_texts = [None] * len(STATS_DEFINITION)
+
+        for i in range(len(STATS_DEFINITION)):
+            prop_def = STATS_DEFINITION[i]
+            prop_names[i] = prop_def.get('property')
+            prop_display_texts[i] = prop_def.get('display_text')
+
+        return dict(
+            names=prop_names,
+            display_texts=prop_display_texts)
+
+    @property
+    def labels(self):
+        labels = dict(
+            properties=self.__get_property_labels()
+        )
+        labels.update(self.LABELS)
+        return labels
+
+    @property
+    def flight_descriptor(self):
+        return self.__search_flight_descriptor()
 
     @property
     def stats_mean(self):
         stats_data = self.stats
         stats_generated = dict()
         
-        flight_descriptor = self.__search_flight_descriptor()
-
-        for prop_def in self.STATS_DEFINITION:
+        for prop_def in STATS_DEFINITION:
 
             prop_stats = []
             prop_name = prop_def.get('property')
@@ -237,12 +285,11 @@ class Stats:
                 label=prop_label,
                 values=prop_stats,
             )
-            
 
             for stat_name in ('min', 'average', 'max'):
                 stat_values = self.__search_stat_values(prop_name, stat_name)
 
-                stat = dict(zip(flight_descriptor, stat_values))
+                stat = dict(zip(self.flight_descriptor, stat_values))
                 stat['id'] =  stat_name
 
                 prop_stats.append(stat)
@@ -251,15 +298,21 @@ class Stats:
     
     @property
     def stats_ranges_count(self):
-        return self.__stats_ranges_base(self.__search_range_count_values)
+        return self.__stats_ranges_base(
+            self.__search_range_count_values
+        )
 
     @property
     def stats_ranges_count_weighted(self):
-        return self.__stats_ranges_base(self.__search_range_count_weighted_values)
+        return self.__stats_ranges_base(
+            self.__search_range_count_weighted_values
+        )
 
     @property
     def stats_ranges_mean_values(self):
-        return self.__stats_ranges_base(self.__search_range_mean_values)
+        return self.__stats_ranges_base(
+            self.__search_range_mean_values
+        )
 
     def __stats_ranges_base(self, get_range_fn):
         def get_range_description(ind):
@@ -270,16 +323,14 @@ class Stats:
                 range_label = "{} < x <= {}".format(
                 range_def[ind-1], range_def[ind])
             else:
-                range_label = "{} < x".format(range_def[ind-1])
+                range_label = "x > {}".format(range_def[ind-1])
 
             return range_label
 
         stats_data = self.stats
         stats_generated = dict()
 
-        flight_descriptor = self.__search_flight_descriptor()
-
-        for prop_def in self.STATS_DEFINITION:
+        for prop_def in STATS_DEFINITION:
 
             prop_name = prop_def.get('property')
             prop_label = prop_def.get('label_stats_ranges')
@@ -296,11 +347,13 @@ class Stats:
                 for j in range(len(range_value)):
                     value = range_value[j]
                     if property_range_calculated[j]:
-                        property_range_calculated[j].update({flight_descriptor[i]: value})
+                        property_range_calculated[j].update({
+                            self.flight_descriptor[i]: value
+                        })
                     else:
                         property_range_calculated[j] = {
                             'id':  get_range_description(j),
-                            flight_descriptor[i]: value
+                            self.flight_descriptor[i]: value
                         }
             
             stats_generated[prop_name] = dict(
@@ -336,11 +389,8 @@ class Stats:
 
         flight_descriptor = []
         for i in range(len(pilot_names)):
-
             tmp = '{}; {}; {}'.format(flight_ids[i], pilot_names[i], flight_dates[i])
             flight_descriptor.append(tmp)
-        # flight_descriptor = ['{}; {}; {}'.format(flight_id, pilot_name, flight_date) 
-        #     for flight_id, pilot_name in zip(flight_ids, pilot_names)]
 
         return flight_descriptor
 
@@ -361,13 +411,27 @@ class Stats:
     def __search_range_mean_values(self, property_name):
         return self.__search_range_base(property_name, 'range_mean_values')
 
-    def __search_property_names(self):
-        prop_names = [prop_def.get('property') for prop_def in self.STATS_DEFINITION ]
-        return prop_names
+    # def __search_property_display_text(self, property_name):
+        # return self.stats.get('meta').get(property_name).get('display_text')
 
 
+class Stats:
+    def __init__(self, owned_circles):
+        self.__stats = StatsCalculator(owned_circles).stats
+        self.__displayer = StatsDisplayer(self.__stats)
+        # print(json.dumps(self.__stats, indent=3))
 
-
-
-
+    @property
+    def stats_for_graphs(self):
+        # print(self.__displayer.meta)
+            # stats_mean=
+            # )
+        return dict(
+            labels=self.__displayer.labels,
+            stats_series_keys=self.__displayer.flight_descriptor,
+            stats_mean=self.__displayer.stats_mean,
+            stats_ranges_count=self.__displayer.stats_ranges_count,
+            stats_ranges_count_weighted=self.__displayer.stats_ranges_count_weighted,
+            stats_ranges_mean_value=self.__displayer.stats_ranges_mean_values,
+        )
 

@@ -4,15 +4,13 @@ import Config from '../config.js';
 import ViewBase from './view_base.js';
 import { GraphStatsRanges } from '../components/graphs/graph_diameter_calculated.js';
 import { GraphMediana } from '../components/graphs/graph_diameter_calculated.js';
+import Loading from '../components/items/loading.js';
 
 class ViewGraphStats extends ViewBase {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
-    // this.fetchUrl(Config.url.flightAnalysis('4/5/6/7/8/9'))
-    this.fetchUrl(Config.url.flightAnalysis('4/5'))
+    
+    const flightsIds = this.props.flightsIds;
+    this.fetchUrl(Config.url.flightAnalysis(flightsIds.join('/')))
     .then(
       json => this.setState({analysis:json})
     );
@@ -98,7 +96,7 @@ class ViewGraphStats extends ViewBase {
             labels={labels('stats_mean')}
             style={graph_style}
           />
-          
+
           <GraphStatsRanges
             keys={keys}
             values={values('stats_ranges_count_weighted')}
@@ -127,7 +125,7 @@ class ViewGraphStats extends ViewBase {
 
   render() {
     if (this.state == null ) {
-      return <div>Sitting and drawing...</div>
+      return <Loading />;
     }
 
     const Grid = styled.div`

@@ -1,5 +1,4 @@
 import React from 'react';
-import Config from '../config.js';
 
 
 class ViewBase extends React.Component {

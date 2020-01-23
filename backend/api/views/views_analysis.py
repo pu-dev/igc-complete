@@ -2,62 +2,33 @@ import logging
 from rest_framework import response
 from rest_framework import status
 from rest_framework import views
-from gliding.igc import IGC
-from gliding import circle
+from gliding.circle.extractor import CircleExtractor
+from gliding.circle.stats import Stats as CircleStats
 from api.models import models_flight
-from api.serializers.serializers_analysis import AnalysisSerializer
-# from api.serializers.serializers_analysis import S
-
 
 logger = logging.getLogger(__name__)
 
 
-class AnalysisListView(views.APIView):
-    def get_dataset(self, pk):
-        fixes = models_flight.Fix.objects.filter(flight__id=pk)
-        return fixes
+class AnalysisFlightsView(views.APIView):
 
-    def get(self, request, pk, format=None):
-        """
-        REST get method.
-        """
+    def get(self, request, pks, format=None):
+        pks = pks[:-1].split('/')
+        stats_data = []
 
-        # Get IGC fixes.
-        #
-        fixes = self.get_dataset(pk)
-        if len(fixes) == 0:
-            return response.Response(
-                {'error': 'Flight id:{}, not found'.format(pk)},
-                status=status.HTTP_404_NOT_FOUND
-            )
+        for flight_id in pks:
+            fixes = models_flight.Fix.objects.filter(flight__id=flight_id)
+            flight = models_flight.Flight.objects.get(id=flight_id)
+            circles  = CircleExtractor(fixes).get_circles()
 
-        fixes_data = [fix.dict for fix in fixes]
+            tmp = dict(
+                flight=flight,
+                circles=circles)
 
-        # Get calculated circles.
-        #
-        circleExtractor = circle.CircleExtractor(fixes)
-        circles  = circleExtractor.get_circles()
+            stats_data.append(tmp)
 
-        circles_data = [
-            circles[i].get_dict(i) for i in range(len(circles))]
-
-        stats = circle.Stats(circles)
-   
-        data = dict(
-            fixes=fixes_data,
-            circles=circles_data,
-            stats=stats.stats
-        )
-
-        # print(stats.stats)
-        # s = S(dat/a = stats.stats.get('diameter_calculated'))
-        # s.is_valid(raise_exception=True)
-        # print(s.data)
-
-        serializer = AnalysisSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
+        stats = CircleStats(stats_data)
 
         return response.Response(
-            serializer.data,
+            stats.stats_for_graphs,
             status=status.HTTP_200_OK
         )

@@ -6,6 +6,7 @@ import Flights from '../flights/flights.js'
 import FlightView from '../../views/view_flight.js';
 
 import ViewGraph from '../../views/view_graph.js';
+import ViewFlights from '../../views/view_flight.js';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -17,6 +18,10 @@ const Views = Object.freeze({
 });
 
 
+
+
+
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -25,20 +30,56 @@ class App extends React.Component {
     
     this.handleMapBackClick = this.handleMapBackClick.bind(this);
 
+    this.handleCompareFlights = this.handleCompareFlights.bind(this);
 
     // Bind clicks
-    this.clickOnViewGraphStats = this.clickOnViewGraphStats.bind(this);
+    // this.onCompareFlights = this.onCompareFlights.bind(this);
+
+    this.constructViewMap();
 
     this.state = {
       flightId: 4,
-      view: Views.GRAPH_STATS
+      view: Views.FLIGHTS
     }
+
+  }
+
+  constructViewMap() {
+
+
+    const viewFlights = () => {
+      return <ViewFlights
+        handleCompareFlights={this.handleCompareFlights}
+      />;
+    };
+
+
+    const viewFlightMap = () => {
+      return <FlightView
+        flightId={this.state.flightId}
+        onBackClick={this.handleMapBackClick}
+      />;
+    };
+
+    const viewGraphStats = () => {
+      return <ViewGraph
+        flightsIds={this.flighstIds}
+
+      />
+    };
+
+    this.viewMap = ViewsMap(this);
+    this.viewMap.addView(Views.FLIGHTS, viewFlights);
+    this.viewMap.addView(Views.MAP, viewFlightMap);
+    this.viewMap.addView(Views.GRAPH_STATS, viewGraphStats);
   }
 
 
-  clickOnViewGraphStats(flightId) {
+  handleCompareFlights(flightsIds) {
+    console.log(flightsIds)
+    this.flighstIds = flightsIds;
     this.setState({
-      flightId: flightId,
+      // flightId: flightId,
       view: Views.GRAPH_STATS});
   }
 
@@ -54,46 +95,49 @@ class App extends React.Component {
       view: Views.FLIGHTS});
   }
 
-
-
-
   displayView() {
 
-    const viewFlights = () => {
-      return <Flights onFlightChange={this.clickOnViewGraphStats}/>;
-    };
-
-    const viewFlightMap = () => {
-      return <FlightView
-        flightId={this.state.flightId}
-        onBackClick={this.handleMapBackClick}
-      />;
-    };
-
-    const viewGraphStats = () => {
-      return <ViewGraph
-        flightId={this.state.flightId}
-
-      />
-    };
 
 
-    var viewsMap = new Map();
-    viewsMap.set(Views.FLIGHTS, viewFlights.bind(this));
-    viewsMap.set(Views.MAP, viewFlightMap.bind(this));
-    viewsMap.set(Views.GRAPH_STATS, viewGraphStats.bind(this));
+    // var viewsMap = new Map();
+    // viewsMap.set(Views.FLIGHTS, viewFlights.bind(this));
+    // viewsMap.set(Views.MAP, viewFlightMap.bind(this));
+    // viewsMap.set(Views.GRAPH_STATS, viewGraphStats.bind(this));
 
 
 
-    var renderFn = viewsMap.get(this.state.view);
-    return renderFn();
+    // var renderFn = viewsMap.get(this.state.view);
+    // return renderFn();
 
   }
 
   render() {
-    return this.displayView();
+    const viewMap = this.viewMap;
+    const view = this.state.view;
+
+    // return this.viewMap.render(this.state.view);
+    return viewMap.renderView(view);
   }
 }
 
+
+const ViewsMap = (cls) => {
+  var viewMap = new Map();
+
+  var self = {};
+  self.addView = function(view, fn) {
+    viewMap.set(view, fn.bind(cls));
+  }
+
+  self.getView = function(viewId) {
+    return viewMap.get(viewId);
+  }
+
+  self.renderView = function(viewId) {
+        return self.getView(viewId)();
+      }
+
+      return self;
+    }
 
 export default App;

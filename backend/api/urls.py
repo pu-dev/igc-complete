@@ -1,4 +1,5 @@
 from django.urls import path
+from django.urls import re_path
 from rest_framework.routers import DefaultRouter
 from api.views import views_flight
 from api.views import views_api
@@ -12,15 +13,13 @@ urlpatterns = [
 
     path('flights/<int:pk>/', views_flight.FlightGetView.as_view()),
 
-    path('flights/<int:pk>/analysis/', views_analysis.AnalysisListView.as_view()),
+    # path('flights/<int:pk>/analysis/', views_analysis.AnalysisListView.as_view()),
 
+    re_path(
+        r'^flights/(?P<pks>([0-9]+/){1,})analysis/$', 
+        views_analysis.AnalysisFlightsView.as_view()
+    ),
 ]
-
-
-# router = DefaultRouter()
-# router.register(r'flights', views_flight.FlightView, basename='flight')
-# urlpatterns += router.urls
-
 
 urlpatterns += [
 
@@ -30,4 +29,3 @@ urlpatterns += [
         path('docs/redoc', views_api.ApiSchemaView.with_ui('redoc', cache_timeout=0)),
         path('docs/schema.yaml', views_api.ApiSchemaView.without_ui(cache_timeout=0)),
 ]
-

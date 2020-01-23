@@ -1,98 +1,136 @@
 import React from 'react';
-import Map from '../components/map/map.js'
-import Button from '../components/items/button.js';
-import Config from '../config.js';
+import Config from '../config.js'
+// import Button from '../components/items/button.js'
 
-import Stats from '../components/stats.js';
+import Button from 'react-bootstrap/Button';
+import ToggleButton from 'react-bootstrap/ToggleButton';
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 
-class FlightView extends React.Component {
+import { useState } from 'react';
+import styled from 'styled-components';
+
+import { PageCenter } from '../components/items/page_center.js';
+
+
+class ViewFlights extends React.Component {
   constructor(props) {
     super(props);
+    
+    this.onCompare = this.onCompare.bind(this);
+    this.handleFlightsSelected = this.handleFlightsSelected.bind(this);
+
     this.state = {
-      flight: null
+      flights: []
     };
   }
 
-  componentDidMount() {
-    this.fetchFlight();
-  }
-
-
-  fetchFlight() {
-    // fetch(Config.url.flight(this.props.flight_id))
-    fetch(Config.url.flightAnalysis(this.props.flight_id))
+  fetchFlights() {
+    fetch(Config.url.flights())
       .then(res => res.json())
       .then((data) => {
-        this.setState({flight: data});
-        this.flightDidLoad();
+          this.setState({flights: data})
       })
       .catch(function(error){
         console.error('Error while feching notes: ', error)
-      });
+      })
   }
 
-  flightDidLoad() {
-    // this.createMap();
+  componentDidMount() {
+    this.fetchFlights();
+  }
 
+  onCompare() {
+    this.props.handleCompareFlights(this.flights);
+    // console.log(this);
+  }
 
-    // (() => {
-    //   const fixes = this.state.flight.fixes;
-    //   var lat_lng = [];
-  
-    //   for (var fix of fixes) {
-    //     lat_lng.push([fix.lat, fix.lng])
-    //   }
-
-    //   this.drawTrack(lat_lng);
-    // })();
-
-    // (() => {
-    //   const circles = this.state.flight.circles;
-     
-    //   var i = 0
-    //   for (var cirlce of circles) {
-    //     var lat_lng = [];
-    //     for (var fix of cirlce.fixes) {
-    //       lat_lng.push([fix.lat, fix.lng])
-    //     }
-    //     if (i==0) {
-    //       this.drawTrack(lat_lng, 'green', false);
-    //       i=1
-    //     }
-    //     else {
-    //      this.drawTrack(lat_lng, 'yellow', false); 
-    //     }
-    //   }
-
-    // })();
+  handleFlightsSelected(ids) {
+    this.flights = ids;
   }
 
   render() {
-    const flight = this.state.flight;
-
-    if (flight == null) {
-      return <div>loading</div>;
-    }
-
+    const flights = this.state.flights;
     return (
-      <div>
-        
-        <Map
-          flight_id={this.props.flight_id}
-        />
-
-        <Button onClick={this.props.onBackClick}>
-          Back
+      <React.Fragment>
+        <Button onClick={this.onCompare}>
+          Compare
         </Button>
-
-        <Stats
-          stats={flight.stats}
-
-        />
-
-      </div>
+        <PageCenter>
+          <FlightsList 
+            flights={flights} 
+            handleFlightsSelected={this.handleFlightsSelected}
+          />
+        </PageCenter>
+      </React.Fragment>
     )
   }
 }
 
-export default FlightView;
+
+function FlightsList({flights, handleFlightsSelected}) {
+  const [selected, setSelected] = useState([]);
+
+  const handleChange = (val) => {
+    setSelected(val);
+    handleFlightsSelected(val);
+  }
+
+  const variant = (id) => {
+    return selected.includes(id) ? "primary" : "outline-primary";
+  }
+
+  const flightsRender = flights.map((flight) => {
+    const ToggleButton_ = styled(ToggleButton)`
+      maring-bottom: 3330px;
+      font-size: 0.75rem;
+    `;
+
+    const DivPilot = styled.div`
+      width: 200px;
+      display: inline-block;
+    `;
+    const DivDate = styled.div`
+      width: 110px;
+      display: inline-block;
+    `;
+    const DivGliderId = styled.div`
+      width: 100px;
+      display: inline-block;
+    `;
+    
+    const DivGliderType = styled.div`
+      width: 160px;
+      display: inline-block;
+    `;
+
+    return (
+      
+      <ToggleButton_ 
+        key={flight.id}
+        value={flight.id}
+        variant={variant(flight.id)}
+      >
+        <DivPilot>{flight.pilot}</DivPilot>
+        <DivDate>{flight.date}</DivDate>
+        <DivGliderType>{flight.glider_type}</DivGliderType>
+        <DivGliderId>{flight.glider_id}</DivGliderId>
+        
+      </ToggleButton_>
+      
+    )
+  });
+
+
+  return (
+    <ToggleButtonGroup 
+      vertical 
+      type="checkbox" 
+      value={selected} 
+      onChange={handleChange}
+    >
+        {flightsRender}      
+    </ToggleButtonGroup>
+  );
+}
+
+export default ViewFlights;

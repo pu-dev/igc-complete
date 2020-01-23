@@ -1,5 +1,0 @@
-#!/bin/bash
-curl \
-	-F "data=@${1}" \
-	-H "Content-Disposition: attachment; filename=tmp.igc" \
-	http://localhost:7000/api/1.0/upload/
