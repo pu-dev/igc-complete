@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import Config from '../../config.js';
-import IGC from '../../igc.js';
 
 // const Wrapper = styled.div`
 //   width: ${props => props.width};
