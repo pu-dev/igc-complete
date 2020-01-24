@@ -3,25 +3,21 @@ import Config from '../config.js'
 // import Button from '../components/items/button.js'
 
 import Button from 'react-bootstrap/Button';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 
 import { useState } from 'react';
 import styled from 'styled-components';
+import ViewBase from './view_base.js';
 
-import { PageCenter } from '../components/items/page_center.js';
+import Navbar from 'react-bootstrap/Navbar';
 
 
-class ViewFlights extends React.Component {
+class ViewFlights extends ViewBase {
   constructor(props) {
     super(props);
-    
-    this.onCompare = this.onCompare.bind(this);
-    this.handleFlightsSelected = this.handleFlightsSelected.bind(this);
-
-    this.state = {
-      flights: []
-    };
   }
 
   fetchFlights() {
@@ -39,30 +35,21 @@ class ViewFlights extends React.Component {
     this.fetchFlights();
   }
 
-  onCompare() {
-    this.props.handleCompareFlights(this.flights);
-    // console.log(this);
-  }
-
   handleFlightsSelected(ids) {
-    this.flights = ids;
+    this.props.onFlightsSelected(ids);
   }
 
-  render() {
+  renderReady() {
     const Div = styled.div`
-      padding-left: 12rem;
-      padding-right: 2rem;
+      text-align:center;
     `;
-    
+
     const flights = this.state.flights;
     return (
       <Div>
-        <Button onClick={this.onCompare}>
-          Compare
-        </Button>
           <FlightsList 
             flights={flights} 
-            handleFlightsSelected={this.handleFlightsSelected}
+            handleFlightsSelected={this.handleFlightsSelected.bind(this)}
           />
       </Div>
     )
@@ -83,19 +70,21 @@ function FlightsList({flights, handleFlightsSelected}) {
   }
 
   const flightsRender = flights.map((flight) => {
-    const ToggleButton_ = styled(ToggleButton)`
-      maring-bottom: 3330px;
+    const ToggleButtonS = styled(ToggleButton)`
       font-size: 0.75rem;
+      background-color: white;
     `;
 
     const DivPilot = styled.div`
       width: 200px;
       display: inline-block;
     `;
+
     const DivDate = styled.div`
       width: 110px;
       display: inline-block;
     `;
+
     const DivGliderId = styled.div`
       width: 100px;
       display: inline-block;
@@ -107,8 +96,7 @@ function FlightsList({flights, handleFlightsSelected}) {
     `;
 
     return (
-      
-      <ToggleButton_ 
+      <ToggleButtonS
         key={flight.id}
         value={flight.id}
         variant={variant(flight.id)}
@@ -118,11 +106,10 @@ function FlightsList({flights, handleFlightsSelected}) {
         <DivGliderType>{flight.glider_type}</DivGliderType>
         <DivGliderId>{flight.glider_id}</DivGliderId>
         
-      </ToggleButton_>
+      </ToggleButtonS>
       
     )
   });
-
 
   return (
     <ToggleButtonGroup 
@@ -131,9 +118,67 @@ function FlightsList({flights, handleFlightsSelected}) {
       value={selected} 
       onChange={handleChange}
     >
-        {flightsRender}      
+      {flightsRender}      
     </ToggleButtonGroup>
   );
 }
 
+
+const FlightViewNavBar = ({onCompare}) => {
+  const ButtonToolbarStyled = styled(ButtonToolbar)`
+    margin: 0 auto; 
+    text-align: center;
+    width: 100%;
+    display: inline-block;
+  `;
+
+  const handleSelect = () => {
+    alert("bong")
+  };
+
+  return (
+    <Navbar 
+      fixed="bottom"
+      bg="light" 
+      expand="lg" 
+      onSelect={handleSelect}
+    >
+      <ButtonToolbarStyled fixed="bottom" aria-label="Toolbar with button groups">
+        <ButtonGroup className="mr-2" aria-label="First group">
+          <Button onClick={onCompare}>Compare</Button>
+        </ButtonGroup>
+      </ButtonToolbarStyled>
+
+    </Navbar>
+  )
+};
+
+
 export default ViewFlights;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

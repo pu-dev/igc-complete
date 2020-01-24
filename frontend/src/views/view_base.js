@@ -1,4 +1,5 @@
 import React from 'react';
+import Loading from '../components/items/loading.js';
 
 
 class ViewBase extends React.Component {
@@ -14,6 +15,19 @@ class ViewBase extends React.Component {
       .catch(function(error){
         console.error('Error while feching notes: ', error)
       });
+  }
+
+  render() {
+    if (this.state == null ) {
+      return <Loading />;
+    }
+
+    return this.renderReady();
+  }
+
+
+  renderReady() {
+    throw new Error("Overwrite me!!!");
   }
 }
 

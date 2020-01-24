@@ -1,8 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
-import { useTheme } from '@nivo/core'
 import { ResponsiveBar } from '@nivo/bar'
-import { ResponsiveBarCanvas } from '@nivo/bar'
+// import { ResponsiveBarCanvas } from '@nivo/bar'
 import styled from 'styled-components';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
@@ -318,7 +317,7 @@ const GraphHeaderBoxReander = (({labels}) => {
     padding-bottom: 10.0px;
   `;
 
-  const Button_ = styled(Button)`
+  const ButtonS = styled(Button)`
     font-size: 0.75em;
     padding: 0.0px;
     float: right;
@@ -336,14 +335,14 @@ const GraphHeaderBoxReander = (({labels}) => {
 
   return (
     <React.Fragment>
-      <Button_ 
+      <ButtonS 
         variant="link"
         onClick={() => setOpen(!open)}
         aria-controls="example-collapse-text"
         aria-expanded={open}
       >
         Read more
-      </Button_>
+      </ButtonS>
       <Title>
         {labels.title}&nbsp;
       </Title>
@@ -365,161 +364,4 @@ const GraphHeaderBoxReander = (({labels}) => {
   </React.Fragment>
   );
 });
-
-
-
-
-
-
-
-
-
-// export default GraphStatsRanges;
-
-
-// export const GraphStatsRanges3 = ({ keys, values, general_info }) => (
-// {
-//     const __div = styled.div`
-//         width: 95%;
-//         height: 350px;
-//     `;
-
-
-
-
-// export const GraphDiameterCalculated = ({data}) => (
-//     <ResponsiveBarCanvas
-//         data={data}
-//         keys={[
-//             'diameter_calculated'
-//         ]}
-//         indexBy="id"
-//         margin={{ top: 50, right: 120, bottom: 50, left: 120 }}
-//         // pixelRatio={1.100000023841858}
-//         padding={0.0}
-//         innerPadding={0}
-//         minValue="auto"
-//         maxValue="auto"
-//         layout="vertical"
-//         reverse={false}
-//         colors={{ scheme: 'nivo' }}
-//         colorBy="id"
-//         borderWidth={0}
-//         axisTop={null}
-//         axisRight={null}
-//         axisBottom={{
-//             tickSize: 0,
-//             legend: 'Diameters of a single circle',
-//             legendPosition: 'middle',
-//             legendOffset: 20,
-//             format: () => '',
-//         }}
-//         axisLeft={{
-//             tickSize: 5,
-//             tickPadding: 5,
-//             tickRotation: 0,
-//             legend: 'diameter in meters',
-//             legendPosition: 'middle',
-//             legendOffset: -55,
-//             // format: (value) => value +' m',
-//         }}
-//         enableGridX={false}
-//         enableGridY={true}
-//         enableLabel={false}
-//         isInteractive={true}
-
-//     />
-// )
-
-// export const GraphDiameterCalculatedStats = ({ keys, values }) => (
-//     <ResponsiveBar
-//         data={ values }
-//         keys={keys}
-//         margin={{ top: 50, right: 120, bottom: 50, left: 120 }}
-//         padding={0.3}
-//         colors={{ scheme: 'nivo' }}
-//         groupMode='grouped'
-
-//         axisTop={null}
-//         axisRight={null}
-//         axisBottom={{
-//             tickSize: 5,
-//             tickPadding: 5,
-//             tickRotation: 0,
-//             legend: 'diameter range in meters',
-//             legendPosition: 'middle',
-//             legendOffset: 40,
-//             format1: ((index) => {
-//                 return 1;
-//               // const item = data[index];
-
-//               // const range_start = Math.round(item.range_start);
-//               // const range_stop = Math.round(item.range_stop);
-
-//               // return `${range_start} - ${range_stop}`;
-//           })
-//         }}
-//         axisLeft={{
-//             tickSize: 1,
-//             tickPadding: 5,
-//             tickRotation: 0,
-//             legend: 'circles count',
-//             legendPosition: 'middle',
-//             legendOffset: -85,
-//         }}
-//         layout="vertical"
-//         enableLabel={true}
-//         label_tmp={(item => {
-//             return 'label'
-//             // return `${item.data.count} ( ${Math.round(item.data.percentage)}% )`
-//         })}
-//         labelSkipWidth={35}
-//         labelSkipHeight={35}
-//         labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 2.6 ] ] }}
-//         animate={true}
-//         motionStiffness={90}
-//         motionDamping={15}
-//     />
-// )
-
-
-// export const GraphDiameterCalculatedSummary = ({ data }) => (
-//     <ResponsiveBar
-//         data={data}
-//         indexBy='var'
-//         keys={[ 'diameter', 'diameter2', 'diameter3' ]}
-//         groupMode='grouped'
-//         margin={{ top: 50, right: 120, bottom: 50, left: 120 }}
-//         padding={0.3}
-//         colors={{ scheme: 'nivo' }}
-//         axisTop={null}
-//         axisRight={null}
-//         axisBottom={{
-//             tickSize: 5,
-//             tickPadding: 5,
-//             tickRotation: 0,
-//             legend: 'Circle diameter',
-//             legendPosition: 'middle',
-//             legendOffset: 40
-//         }}
-//         axisLeft={{
-//             tickSize: 5,
-//             tickPadding: 5,
-//             tickRotation: 0,
-//             legend: 'diameter in meters',
-//             legendPosition: 'middle',
-//             legendOffset: -55,
-
-//         }}
-//         layout="vertical"
-//         enableLabel={true}
-
-//         labelSkipWidth={35}
-//         labelSkipHeight={12}
-//         labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 2.6 ] ] }}
-//         animate={true}
-//         motionStiffness={90}
-//         motionDamping={15}
-//     />
-// )
 

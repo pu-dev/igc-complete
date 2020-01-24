@@ -5,20 +5,49 @@ import 'leaflet/dist/leaflet.css';
 import Config from '../../config.js';
 import IGC from '../../igc.js';
 
-const Wrapper = styled.div`
-  width: ${props => props.width};
-  height: ${props => props.height};
-`;
-
+// const Wrapper = styled.div`
+//   width: ${props => props.width};
+//   height: 100%;
+//   background-color:green;
+// `;
 
 
 class Map extends React.Component {
   constructor(props) {
+
     super(props);
+    console.log("mapconstru")
     this.state = {
-      flight: null
+      flight: null, width: 0, height: 0
     };
+      
+    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+
   }
+
+
+componentDidMount() {
+  console.log("mount")
+      console.log("mount")
+ this.fetchFlight();
+  this.updateWindowDimensions();
+  window.addEventListener('resize', this.updateWindowDimensions);
+}
+
+componentWillUnmount() {
+  window.removeEventListener('resize', this.updateWindowDimensions);
+}
+
+updateWindowDimensions() {
+  console.log("updateWindowDimensions")
+  console.log(window.innerHeight)
+  this.setState({ width: window.innerWidth, height: window.innerHeight });
+
+  if (this.map != null ) {
+    this.flightDidLoad();
+  }
+}
+
 
   createMap() {
    if (typeof this.map != 'undefined') {
@@ -39,13 +68,14 @@ class Map extends React.Component {
     }).addTo(this.map);
   }
 
-  componentDidMount() {
-    this.fetchFlight();
-  }
+  // componentDidMount() {
+  //   this.fetchFlight();
+  // }
 
   fetchFlight() {
+    console.log(this.props.flightIds)
     // fetch(Config.url.flight(this.props.flight_id))
-    fetch(Config.url.flightAnalysis(this.props.flight_id))
+    fetch(Config.url.flight(this.props.flightsIds[0]))
       .then(res => res.json())
       .then((data) => {
         this.setState({flight: data});
@@ -71,25 +101,25 @@ class Map extends React.Component {
       this.drawTrack(lat_lng);
     })();
 
-    (() => {
-      const circles = this.state.flight.circles;
+    // (() => {
+    //   const circles = this.state.flight.circles;
      
-      var i = 0
-      for (var cirlce of circles) {
-        var lat_lng = [];
-        for (var fix of cirlce.fixes) {
-          lat_lng.push([fix.lat, fix.lng])
-        }
-        if (i==0) {
-          this.drawTrack(lat_lng, 'green', false);
-          i=1
-        }
-        else {
-         this.drawTrack(lat_lng, 'yellow', false); 
-        }
-      }
+    //   var i = 0
+    //   for (var cirlce of circles) {
+    //     var lat_lng = [];
+    //     for (var fix of cirlce.fixes) {
+    //       lat_lng.push([fix.lat, fix.lng])
+    //     }
+    //     if (i==0) {
+    //       this.drawTrack(lat_lng, 'green', false);
+    //       i=1
+    //     }
+    //     else {
+    //      this.drawTrack(lat_lng, 'yellow', false); 
+    //     }
+    //   }
 
-    })();
+    // })();
   }
 
   componentDidUpdate(prevProps) {
@@ -114,7 +144,15 @@ class Map extends React.Component {
 
 
   render() {
-    return <Wrapper width="100" height="120px" id="map" />
+
+const Wrapper = styled.div`
+  width: 100%;
+  height: ${this.state.height-150}px;
+
+`;
+
+    return <Wrapper id="map" />
+      
   }
 
 }

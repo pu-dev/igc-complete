@@ -4,7 +4,6 @@ import Config from '../config.js';
 import ViewBase from './view_base.js';
 import { GraphStatsRanges } from '../components/graphs/graph_diameter_calculated.js';
 import { GraphMediana } from '../components/graphs/graph_diameter_calculated.js';
-import Loading from '../components/items/loading.js';
 
 class ViewGraphStats extends ViewBase {
   componentDidMount() {
@@ -57,7 +56,7 @@ class ViewGraphStats extends ViewBase {
       style_1: "primary",
       style_2: "success",
       get: function() {
-        this.style = (this.style == this.style_2 ) ? this.style_1 : this.style_2;
+        this.style = (this.style === this.style_2 ) ? this.style_1 : this.style_2;
         return this.style;
       }
     }
@@ -66,13 +65,8 @@ class ViewGraphStats extends ViewBase {
     const props_processed = analysis.labels.properties.names;
 
     return props_processed.map((prop) => {
-
-      const mean_values = analysis.stats_mean[prop].values;
-      const mean_info = analysis.labels.stats_mean.general_info;
-
       const title = analysis.labels.properties.display_texts[index];
       
-
       const labels = ((stat) => {
         const sub_title = analysis.labels[stat].info;
         var tmp = analysis.labels[stat][prop];
@@ -123,27 +117,7 @@ class ViewGraphStats extends ViewBase {
       });
   }
 
-  render() {
-    if (this.state == null ) {
-      return <Loading />;
-    }
-
-    const Grid = styled.div`
-
-      display: grid;
-      @media (max-width: 1200px) {
-        grid-template-columns: 100%;
-        grid-template-rows: minmax(300px, 75%);
-    
-      }
-      @media (min-width: 1200px) {
-        grid-template-columns: 50% 50%;
-        grid-template-rows: minmax(300px, 75%);
-      }
-      grid-auto-flow: rows;
-      grid-auto-rows: 500px;
-    `;
-
+  renderReady() {
     const analysis = this.state.analysis;
     const graphs = this.renderGridGraph(analysis);
 
