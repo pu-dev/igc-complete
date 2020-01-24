@@ -24,9 +24,11 @@ SECRET_KEY = '@*(!-%o$l0i7r$sjxy!83z%+sio#j@6%(e=sk2z3q4jtn2(x=$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
-DEBUG = FALSE
+# ALLOWED_HOSTS = ['localhost', 'glide.3o3.it']
 
-ALLOWED_HOSTS = ['localhost', 'glide.3o3.it']
+DEBUG = False
+ALLOWED_HOSTS = ['glide.3o3.it']
+
 
 
 # Application definition
@@ -162,14 +164,14 @@ LOGGING = {
 
 
 DEVELOPMENT = {
-    'igc_dir': ''.join([BASE_DIR, '/deployment/test_data']),
+    'igc_dir': ''.join([BASE_DIR, '/deployment/leszno_data']),
     
 }
 
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3000',
-    'http://192.168.8.100:3000',
-    'http://localhost:5000',
-    'http://local:5000',
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:3000',
+#     'http://192.168.8.100:3000',
+#     'http://localhost:5000',
+#     'http://local:5000',
 
-)
+# )
