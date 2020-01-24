@@ -1,38 +1,24 @@
 import React from 'react';
-import Config from '../config.js'
-// import Button from '../components/items/button.js'
-
+import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Navbar from 'react-bootstrap/Navbar';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
-
-import { useState } from 'react';
 import styled from 'styled-components';
 import ViewBase from './view_base.js';
-
-import Navbar from 'react-bootstrap/Navbar';
-
+import Config from '../config.js'
+import './view_flight.css'
 
 class ViewFlights extends ViewBase {
   constructor(props) {
     super(props);
   }
-
-  fetchFlights() {
-    fetch(Config.url.flights())
-      .then(res => res.json())
-      .then((data) => {
-          this.setState({flights: data})
-      })
-      .catch(function(error){
-        console.error('Error while feching notes: ', error)
-      })
-  }
-
+  
   componentDidMount() {
-    this.fetchFlights();
+    this.fetchUrl(Config.url.flights())
+    .then(json => this.setState({flights: json}));
   }
 
   handleFlightsSelected(ids) {
@@ -40,18 +26,15 @@ class ViewFlights extends ViewBase {
   }
 
   renderReady() {
-    const Div = styled.div`
-      text-align:center;
-    `;
-
     const flights = this.state.flights;
+
     return (
-      <Div>
+      <div className="flights-list-cont">
           <FlightsList 
             flights={flights} 
             handleFlightsSelected={this.handleFlightsSelected.bind(this)}
           />
-      </Div>
+      </div>
     )
   }
 }
@@ -65,61 +48,41 @@ function FlightsList({flights, handleFlightsSelected}) {
     handleFlightsSelected(val);
   }
 
-  const variant = (id) => {
-    return selected.includes(id) ? "primary" : "outline-primary";
-  }
+  // const variant = (id) => {
+  //   return selected.includes(id) ? "primary" : "outline-primary";
+  // }
+
+  const ToggleButtonS = styled(ToggleButton)`
+    font-size: 0.75rem;
+  `;
 
   const flightsRender = flights.map((flight) => {
-    const ToggleButtonS = styled(ToggleButton)`
-      font-size: 0.75rem;
-      background-color: white;
-    `;
-
-    const DivPilot = styled.div`
-      width: 200px;
-      display: inline-block;
-    `;
-
-    const DivDate = styled.div`
-      width: 110px;
-      display: inline-block;
-    `;
-
-    const DivGliderId = styled.div`
-      width: 100px;
-      display: inline-block;
-    `;
-    
-    const DivGliderType = styled.div`
-      width: 160px;
-      display: inline-block;
-    `;
-
     return (
       <ToggleButtonS
         key={flight.id}
         value={flight.id}
-        variant={variant(flight.id)}
+        variant="outline-primary"
+        checked
       >
-        <DivPilot>{flight.pilot}</DivPilot>
-        <DivDate>{flight.date}</DivDate>
-        <DivGliderType>{flight.glider_type}</DivGliderType>
-        <DivGliderId>{flight.glider_id}</DivGliderId>
-        
+        <div className="flight-pilot">{flight.pilot}</div>
+        <div className="flight-date">{flight.date}</div>
+        <div className="flight-glider-type">{flight.glider_type}</div>
+        <div className="flight-glider-id">{flight.glider_id}</div>
       </ToggleButtonS>
-      
     )
   });
 
   return (
-    <ToggleButtonGroup 
-      vertical 
-      type="checkbox" 
-      value={selected} 
-      onChange={handleChange}
-    >
-      {flightsRender}      
-    </ToggleButtonGroup>
+    <React.Fragment>
+      <ToggleButtonGroup 
+        vertical 
+        type="checkbox" 
+        value={selected} 
+        onChange={handleChange}
+      >
+        {flightsRender}      
+      </ToggleButtonGroup>
+    </React.Fragment>
   );
 }
 
