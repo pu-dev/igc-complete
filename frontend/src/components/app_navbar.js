@@ -27,7 +27,7 @@ const AppNavbar = ({onNavbar}) => {
 
     <Navbar.Brand>
       <img
-        src="http://glide.3o3.it/static/pp-2.png"
+        src={process.env.PUBLIC_URL + '/img/logo-glider.png'}
         width="30"
         height="30"
         className="d-inline-block align-top"

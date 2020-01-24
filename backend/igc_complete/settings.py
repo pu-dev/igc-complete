@@ -23,7 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '@*(!-%o$l0i7r$sjxy!83z%+sio#j@6%(e=sk2z3q4jtn2(x=$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = FALSE
 
 ALLOWED_HOSTS = ['localhost', 'glide.3o3.it']
 
