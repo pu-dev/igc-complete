@@ -60,7 +60,7 @@ class App extends React.Component {
   }
  
   handleNavbar(viewId) {
-    if (viewId != this.FLIGHTS) {
+    if (viewId != AppView.FLIGHTS) {
       if ( ! this.isFlightsIdsSet() ) {
 
         this.warning = {

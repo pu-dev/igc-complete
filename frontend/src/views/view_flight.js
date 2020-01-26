@@ -11,14 +11,34 @@ import ViewBase from './view_base.js';
 import Config from '../config.js'
 import './view_flight.css'
 
+
+const Query = {
+  allFlights : `
+    {
+      allFlights {
+        id
+        pilot
+        date
+        gliderId
+        gliderType
+      }
+    }
+  `
+}
+
+
 class ViewFlights extends ViewBase {
   constructor(props) {
     super(props);
   }
   
   componentDidMount() {
-    this.fetchUrl(Config.url.flights())
-    .then(json => this.setState({flights: json}));
+    this.fetchGQL(Config.url.flights(), Query.allFlights)
+      .then(json => { 
+        this.setState({flights: json.data.allFlights
+      }) }
+    );
+
   }
 
   handleFlightsSelected(ids) {

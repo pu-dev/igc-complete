@@ -1,3 +1,4 @@
+aniso8601==7.0.0
 asgiref==3.2.3
 certifi==2019.11.28
 chardet==3.0.4
@@ -8,6 +9,10 @@ Django==3.0.2
 django-cors-headers==3.2.1
 djangorestframework==3.11.0
 drf-yasg==1.17.0
+graphene==2.1.8
+graphene-django==2.8.0
+graphql-core==2.3.1
+graphql-relay==2.0.1
 idna==2.8
 inflection==0.3.1
 itypes==1.1.0
@@ -18,11 +23,14 @@ jsonpath-ng==1.4.3
 MarkupSafe==1.1.1
 packaging==20.0
 ply==3.11
+promise==2.3
 pyparsing==2.4.6
 pytz==2019.3
 requests==2.22.0
 ruamel.yaml==0.16.5
 ruamel.yaml.clib==0.2.0
+Rx==1.6.1
+singledispatch==3.4.0.3
 six==1.14.0
 sqlparse==0.3.0
 uritemplate==3.0.1
