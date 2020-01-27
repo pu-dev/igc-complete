@@ -1,19 +1,13 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import AppView from './app_view.js';
+// import NavDropdown from 'react-bootstrap/NavDropdown';
+// import AppView from './app_view.js';
 
 
 const AppNavbar = ({onNavbar}) => {
-
   const handleSelect = viewId => {
     onNavbar(viewId);
-  }
-
-  const handleBrandSelect = () => {
-    onNavbar(AppView.FLIGHTS);
   }
 
   return (

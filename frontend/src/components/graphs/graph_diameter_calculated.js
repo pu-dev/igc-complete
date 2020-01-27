@@ -171,6 +171,7 @@ class GraphStatsRangesRender extends React.Component {
             direction: 'column',
             translateX: 0,
             translateY: 10,
+            dataFrom: 'keys'
           }
         ]}
         axisTop={null}
@@ -245,6 +246,7 @@ class GraphMedianaRender extends React.Component {
             direction: 'column',
             translateX: 0,
             translateY: 10,
+            dataFrom: 'keys',
           }
         ]}
         axisTop={null}

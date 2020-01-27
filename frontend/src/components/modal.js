@@ -1,8 +1,6 @@
 import React from 'react';
-import Modal from 'react-bootstrap/Modal'
 import { useState } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button';
 
 function Example({title, msg, onClose}) {

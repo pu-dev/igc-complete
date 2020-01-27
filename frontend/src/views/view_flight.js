@@ -1,9 +1,9 @@
 import React from 'react';
 import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Navbar from 'react-bootstrap/Navbar';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+// import Button from 'react-bootstrap/Button';
+// import Navbar from 'react-bootstrap/Navbar';
+// import ButtonGroup from 'react-bootstrap/ButtonGroup';
+// import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import styled from 'styled-components';
@@ -28,10 +28,6 @@ const Query = {
 
 
 class ViewFlights extends ViewBase {
-  constructor(props) {
-    super(props);
-  }
-  
   componentDidMount() {
     this.fetchGQL(Config.url.flights(), Query.allFlights)
       .then(json => { 
@@ -76,6 +72,10 @@ function FlightsList({flights, handleFlightsSelected}) {
     font-size: 0.75rem;
   `;
 
+  const ToggleButtonGroupS = styled(ToggleButtonGroup)`
+    padding-top:15px;
+    padding-bottom:15px;
+  `;
   const flightsRender = flights.map((flight) => {
     return (
       <ToggleButtonS
@@ -86,82 +86,56 @@ function FlightsList({flights, handleFlightsSelected}) {
       >
         <div className="flight-pilot">{flight.pilot}</div>
         <div className="flight-date">{flight.date}</div>
-        <div className="flight-glider-type">{flight.glider_type}</div>
-        <div className="flight-glider-id">{flight.glider_id}</div>
+        <div className="flight-glider-type">{flight.gliderType}</div>
+        <div className="flight-glider-id">{flight.gliderId}</div>
       </ToggleButtonS>
     )
   });
 
   return (
     <React.Fragment>
-      <ToggleButtonGroup 
+      <ToggleButtonGroupS 
         vertical 
         type="checkbox" 
         value={selected} 
         onChange={handleChange}
       >
         {flightsRender}      
-      </ToggleButtonGroup>
+      </ToggleButtonGroupS>
     </React.Fragment>
   );
 }
 
 
-const FlightViewNavBar = ({onCompare}) => {
-  const ButtonToolbarStyled = styled(ButtonToolbar)`
-    margin: 0 auto; 
-    text-align: center;
-    width: 100%;
-    display: inline-block;
-  `;
+// const FlightViewNavBar = ({onCompare}) => {
+//   const ButtonToolbarStyled = styled(ButtonToolbar)`
+//     margin: 0 auto; 
+//     text-align: center;
+//     width: 100%;
+//     display: inline-block;
+//   `;
 
-  const handleSelect = () => {
-    alert("bong")
-  };
+//   const handleSelect = () => {
+//     alert("bong")
+//   };
 
-  return (
-    <Navbar 
-      fixed="bottom"
-      bg="light" 
-      expand="lg" 
-      onSelect={handleSelect}
-    >
-      <ButtonToolbarStyled fixed="bottom" aria-label="Toolbar with button groups">
-        <ButtonGroup className="mr-2" aria-label="First group">
-          <Button onClick={onCompare}>Compare</Button>
-        </ButtonGroup>
-      </ButtonToolbarStyled>
+//   return (
+//     <Navbar 
+//       fixed="bottom"
+//       bg="light" 
+//       expand="lg" 
+//       onSelect={handleSelect}
+//     >
+//       <ButtonToolbarStyled fixed="bottom" aria-label="Toolbar with button groups">
+//         <ButtonGroup className="mr-2" aria-label="First group">
+//           <Button onClick={onCompare}>Compare</Button>
+//         </ButtonGroup>
+//       </ButtonToolbarStyled>
 
-    </Navbar>
-  )
-};
+//     </Navbar>
+//   )
+// };
 
 
 export default ViewFlights;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -52,7 +52,7 @@ class App extends React.Component {
       return false;
     }
 
-    if ( this.flightsIds.length == 0 ) {
+    if ( this.flightsIds.length === 0 ) {
       return false;
     }
 
@@ -60,7 +60,7 @@ class App extends React.Component {
   }
  
   handleNavbar(viewId) {
-    if (viewId != AppView.FLIGHTS) {
+    if (viewId !== AppView.FLIGHTS) {
       if ( ! this.isFlightsIdsSet() ) {
 
         this.warning = {
