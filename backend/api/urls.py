@@ -9,18 +9,19 @@ from api.views import views_analysis
 
 
 from api.gql_schemas.schema_flight import schema as flight_schema
+from api.gql_schemas.schema_track import schema as track_schema
 
 urlpatterns = [
     path('upload/', views_flight.FlighUploadView.as_view()),
 
-    path('flights/', views_flight.FlightHeaderListView.as_view()),
+    # path('flights/', views_flight.FlightHeaderListView.as_view()),
 
-    path('flights/<int:pk>/', views_flight.FlightGetView.as_view()),
+    # path('flights/<int:pk>/', views_flight.FlightGetView.as_view()),
 
-    re_path(
-        r'^flights/(?P<pks>([0-9]+/){1,})analysis/$', 
-        views_analysis.AnalysisFlightsView.as_view()
-    ),
+    # re_path(
+    #     r'^flights/(?P<pks>([0-9]+/){1,})analysis/$', 
+    #     views_analysis.AnalysisFlightsView.as_view()
+    # ),
 
     # Analysis
     re_path(
@@ -35,7 +36,7 @@ urlpatterns = [
 urlpatterns += [
     # fixme: csrf_exempt must go
     path('gql/flights/', 
-        csrf_exempt(GraphQLView.as_view(graphiql=True, schema=flight_schema)))
+        csrf_exempt(GraphQLView.as_view(graphiql=True, schema=flight_schema))),
 ]
 
 

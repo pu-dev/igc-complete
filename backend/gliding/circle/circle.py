@@ -80,4 +80,6 @@ class Circle:
     def fixes_count(self):
         return len(self.fixes)
 
+    def __str__(self):
+        return 'Fixes count: {}, diameter: {}'.format(self.fixes_count, self.diameter_calculated)
 
