@@ -1,0 +1,49 @@
+.marker {
+  width: 20px;
+  height: 20px;
+  padding: 0px;
+  margin: 0 5px 0 0;
+  position: relative;
+  top: 5px;   
+  display: inline-block;
+}
+
+.pilot {
+  margin: 0px;
+  padding: 0px;
+  font-size: 0.8rem;
+  display: block;
+  vertical-align: top;
+  position: relative;
+  top: -5px;            
+}
+
+.date {
+  margin: 0px;
+  padding: 0px;
+  font-size: 0.55rem;
+  float: right;
+  position: relative;
+  top: -8px;
+}
+
+.value {
+  width: 100%;
+  text-align: center;
+  vertical-align: top;
+  display: block;
+  margin: 0px;
+  padding: 0px;
+  font-size: 0.9rem;
+}
+
+.pilot-data-container {
+  display:inline-block;
+  height: 20px;
+}
+
+.hr-small {
+  margin: 5px 0 3px 0;
+}
+
+

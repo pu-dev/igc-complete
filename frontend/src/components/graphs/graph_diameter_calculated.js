@@ -1,12 +1,13 @@
 import React from 'react';
 import { useState } from 'react';
 import { ResponsiveBar } from '@nivo/bar'
+import { BoxLegendSvg } from "@nivo/legends";
 // import { ResponsiveBarCanvas } from '@nivo/bar'
 import styled from 'styled-components';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Collapse from 'react-bootstrap/Collapse';
-
+import './graph.css';
 
 class GraphBase extends React.Component {
   render() {
@@ -86,6 +87,93 @@ export class GraphMediana extends GraphBase {
 }
 
 
+const ResponsiveBarCustomized = (config) => {
+
+  // Fixme:
+  const tmpColors = ['#e8c1a0', '#f47560', '#f1e15b', '#e8a838', '#61cdbb', '#97e3d5']
+  const colors = tmpColors.concat(tmpColors).concat(tmpColors)
+
+  const getLayers = () => [ "grid", "axes", "bars", "markers", renderLegend];
+  
+  const getLegends = () => {
+    const keys = config.keys;
+    return [{
+      dataFrom: "keys",
+      data: keys.map((id, index) => ({
+        id,
+        color: colors[index],
+        label: id.split('____')[1]
+      })),
+      itemDirection: "right-to-left",
+      anchor: 'top-right',
+      itemWidth: 20,
+      itemHeight: 15,
+      symbolSize: 10,
+      itemsSpacing: 0,
+      direction: 'column',
+      translateX: 0,
+      translateY: -10,
+    }]
+  }
+
+  const renderLegend = ({ height, legends, width }) => {
+    return <React.Fragment>
+      {legends.map(legend => (
+        <BoxLegendSvg
+          key={JSON.stringify(legend.data.map(({ id }) => id))}
+          {...legend}
+          containerHeight={height}
+          containerWidth={width}
+        />
+      ))}
+    </React.Fragment>
+  }
+
+  const renderTooltip = ({id, value , color}) => {
+    const [id_, pilot, date] = id.split('____');
+    return (
+      <React.Fragment>
+        <style>
+          {`
+            .marker-color {
+              background-color: ${color};
+            }
+          `}
+        </style>
+
+        <div className="marker marker-color" />
+
+        <div className="pilot-data-container">
+          <div className="pilot">
+            {pilot}
+          </div>
+
+          <div className="date">
+            {date}
+          </div>
+
+        </div>
+        
+        <hr className="hr-small"/>
+        
+        <strong className="value">
+          {value}
+        </strong>
+      </React.Fragment>)
+    };
+
+
+  return <ResponsiveBar
+    layers={getLayers()}
+    legends={getLegends()}
+    colors={colors}
+    // colors={{ scheme: 'nivo' }}
+    tooltip={renderTooltip}
+    {...config}
+  />
+
+}
+
 class GraphStatsRangesRender extends React.Component {
   render() {
     const keys = this.props.keys;
@@ -148,8 +236,10 @@ class GraphStatsRangesRender extends React.Component {
     // CustomTick.counter = 0;
     const labels = this.props.labels;
 
+
     return (
-      <ResponsiveBar
+      <ResponsiveBarCustomized
+
         data={values}
         keys={keys}
         margin={{ 
@@ -159,21 +249,7 @@ class GraphStatsRangesRender extends React.Component {
           left: 70 
         }}
         padding={0.3}
-        colors={{ scheme: 'nivo' }}
         groupMode='grouped'
-        legends ={[ 
-          {
-            anchor: 'top-left',
-            itemWidth: 20,
-            itemHeight: 20,
-            symbolSize: 20,
-            itemsSpacing: 5,
-            direction: 'column',
-            translateX: 0,
-            translateY: 10,
-            dataFrom: 'keys'
-          }
-        ]}
         axisTop={null}
         axisRight={null}
         axisBottom={{
@@ -184,16 +260,6 @@ class GraphStatsRangesRender extends React.Component {
           legendPosition: 'middle',
           legendOffset: 10,
           // renderTick: CustomTick,
-
-          // format1: ((index) => {
-          //     return 1;
-          //   // const item = data[index];
-
-          //   // const range_start = Math.round(item.range_start);
-          //   // const range_stop = Math.round(item.range_stop);
-
-          //   // return `${range_start} - ${range_stop}`;
-          // })
         }}
         axisLeft={{
             tickSize: 0,
@@ -224,7 +290,7 @@ class GraphMedianaRender extends React.Component {
     const labels = this.props.labels;
 
     return (
-      <ResponsiveBar
+      <ResponsiveBarCustomized
         data={values}
         keys={keys}
         margin={{ 
@@ -234,21 +300,7 @@ class GraphMedianaRender extends React.Component {
           left: 70 
         }}
         padding={0.3}
-        colors={{ scheme: 'nivo' }}
         groupMode='grouped'
-        legends ={[ 
-          {
-            anchor: 'top-left',
-            itemWidth: 20,
-            itemHeight: 20,
-            symbolSize: 20,
-            itemsSpacing: 5,
-            direction: 'column',
-            translateX: 0,
-            translateY: 10,
-            dataFrom: 'keys',
-          }
-        ]}
         axisTop={null}
         axisRight={null}
         axisBottom={{

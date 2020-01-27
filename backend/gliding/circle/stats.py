@@ -389,7 +389,7 @@ class StatsDisplayer:
 
         flight_descriptor = []
         for i in range(len(pilot_names)):
-            tmp = '{}; {}; {}'.format(flight_ids[i], pilot_names[i], flight_dates[i])
+            tmp = '{}____{}____{}'.format(flight_ids[i], pilot_names[i], flight_dates[i])
             flight_descriptor.append(tmp)
 
         return flight_descriptor
