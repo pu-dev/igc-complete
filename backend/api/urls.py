@@ -6,17 +6,15 @@ from rest_framework.routers import DefaultRouter
 from api.views import views_flight
 from api.views import views_api
 from api.views import views_analysis
-
-
 from api.gql_schemas.schema_flight import schema as flight_schema
-from api.gql_schemas.schema_track import schema as track_schema
+
 
 urlpatterns = [
     path('upload/', views_flight.FlighUploadView.as_view()),
 
     # path('flights/', views_flight.FlightHeaderListView.as_view()),
 
-    # path('flights/<int:pk>/', views_flight.FlightGetView.as_view()),
+    path('flights/<int:pk>/', views_flight.FlightGetView.as_view()),
 
     # re_path(
     #     r'^flights/(?P<pks>([0-9]+/){1,})analysis/$', 

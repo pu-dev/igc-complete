@@ -13,6 +13,15 @@ class FixType(DjangoObjectType):
     class Meta:
         model = Fix
 
+    f_lat = graphene.Float()
+
+    f_lng = graphene.Float()
+
+    def resolve_f_lat(self, info):
+        return self.f_lat
+
+    def resolve_f_lng(self, info):
+        return self.f_lng
 
 class CircleType(graphene.ObjectType):
     diameter = graphene.Float()
@@ -85,6 +94,7 @@ class QueryFlights:
                     flights.append(flight)
             return flights
 
+        # return None
         return Flight.objects.all()
 
 

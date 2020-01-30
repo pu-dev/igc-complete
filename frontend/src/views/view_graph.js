@@ -14,7 +14,10 @@ class ViewGraphStats extends ViewBase {
     const flightsIds = this.props.flightsIds;
     this.fetchURL(Config.url.flightAnalysis(flightsIds.join('/')))
     .then(
-      json => this.setState({analysis:json})
+      json => this.setState({
+        analysis:json,
+        renderReady: true
+      })
     );
   }
 

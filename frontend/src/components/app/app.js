@@ -2,9 +2,11 @@ import React from 'react';
 // import logo from './logo.svg';
 import AppView from '../app_view.js';
 import AppNavbar from '../app_navbar.js';
-import ViewMap from '../../components/map/map.js';
+
+import ViewMap from '../../views/view_map.js';
 import ViewFlights from '../../views/view_flight.js';
 import ViewGraph from '../../views/view_graph.js';
+
 import Warning from '../modal.js';
 
 import './app.css';
@@ -86,7 +88,7 @@ class App extends React.Component {
       return <Warning 
         onClose={this.handleWarning.bind(this)}
         title={this.warning.title}
-        msg={this.warning.msg}
+        body={this.warning.msg}
       />;
     }
 

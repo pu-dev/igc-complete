@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button';
 
-function Example({title, msg, onClose}) {
+function Example({title, body, onClose}) {
   const [show, setShow] = useState(true);
 
   const handleClose = () => {
@@ -18,7 +18,7 @@ function Example({title, msg, onClose}) {
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>{msg}</Modal.Body>
+        <Modal.Body>{body}</Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleClose}>
             Close

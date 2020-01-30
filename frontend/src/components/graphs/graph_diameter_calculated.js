@@ -89,10 +89,7 @@ export class GraphMediana extends GraphBase {
 
 const ResponsiveBarCustomized = (config) => {
 
-  // Fixme:
-  const tmpColors = ['#e8c1a0', '#f47560', '#f1e15b', '#e8a838', '#61cdbb', '#97e3d5']
-  const colors = tmpColors.concat(tmpColors).concat(tmpColors)
-
+  const colors = ['#e8c1a0', '#f47560', '#f1e15b', '#e8a838', '#61cdbb', '#97e3d5']
   const getLayers = () => [ "grid", "axes", "bars", "markers", renderLegend];
   
   const getLegends = () => {
@@ -101,7 +98,7 @@ const ResponsiveBarCustomized = (config) => {
       dataFrom: "keys",
       data: keys.map((id, index) => ({
         id,
-        color: colors[index],
+        color: colors[index % colors.length],
         label: id.split('____')[1]
       })),
       itemDirection: "right-to-left",
@@ -392,7 +389,7 @@ const GraphHeaderBoxReander = (({labels}) => {
       <ButtonS 
         variant="link"
         onClick={() => setOpen(!open)}
-        aria-controls="example-collapse-text"
+        
         aria-expanded={open}
       >
         Read more

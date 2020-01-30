@@ -1,24 +1,3 @@
 .flights-list-cont {
   text-align: center;
 }
-
-.flight-pilot {
-  width: 200px;
-  display: inline-block;
-}
-
-.flight-date  {
-  width: 110px;
-  display: inline-block;
-}
-
-.flight-glider-type  {
-  width: 160px;
-  display: inline-block;
-}
-
-.flight-glider-id  {
-  width: 100px;
-  display: inline-block;
-}
-
