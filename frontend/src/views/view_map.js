@@ -75,8 +75,8 @@ class MapReamining extends ViewBase {
   }
 
   componentDidMount() {
-    this.fetchFlights(GqlQuery, { 'pks': [1, 2] });
-    // this.fetchFlights(GqlQuery, { 'pks': this.props.flightsIds });
+    // this.fetchFlights(GqlQuery, { 'pks': [1, 2] });
+    this.fetchFlights(GqlQuery, { 'pks': this.props.flightsIds });
   }
 
   componentDidUpdate(prevProps) {
