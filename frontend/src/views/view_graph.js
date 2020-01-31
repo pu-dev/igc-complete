@@ -7,6 +7,8 @@ import { GraphStatsRanges } from '../components/graphs/graph_diameter_calculated
 import { GraphMediana } from '../components/graphs/graph_diameter_calculated.js';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
+import StatsMenu from '../components/stats_menu.js';
+
 
 class ViewGraphStats extends ViewBase {
   componentDidMount() {

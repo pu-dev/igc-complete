@@ -12,6 +12,8 @@ import Warning from '../modal.js';
 import './app.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import Modal from '../modal.js';
+import FlightsList from '../flights_list.js';
 class App extends React.Component {
   constructor(props) {
     super(props);

@@ -10,7 +10,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import SplitButton from 'react-bootstrap/SplitButton';
 import Button from 'react-bootstrap/Button';
 
-
+import SideMenu from './side_menu.js';
 
 const MapMenu = ({onClick, flights, onNavbar}) => {
   const handleClick = (actionKey, flight) => {
@@ -20,7 +20,6 @@ const MapMenu = ({onClick, flights, onNavbar}) => {
 
   const items = flights.map((flight, index) => {
 
-    
     return (
       <MapMenuFlightItem 
         flight={flight} 
@@ -32,17 +31,13 @@ const MapMenu = ({onClick, flights, onNavbar}) => {
   });
 
   return (
-    <Navbar 
-      fixed="bottom"
-      bg="dark" 
-      variant="dark"
-      expand="sm" 
+    <SideMenu 
+      width="150px"
     >
-
       <ButtonToolbar>
         {items}
       </ButtonToolbar>
-    </Navbar>
+    </SideMenu>
   )
 }
 
@@ -55,7 +50,7 @@ class MapMenuFlightItem extends React.Component {
     }
 
     this.buttonVariant = {
-      disabled: "outline-success",
+      disabled: "outline-secondary",
       enabled: "success"
     }
   }
@@ -63,6 +58,11 @@ class MapMenuFlightItem extends React.Component {
   getButtonVariant() {
     return this.state.enabled ? this.buttonVariant.enabled : this.buttonVariant.disabled;
   }
+
+  getButtonVariant2() {
+    return this.state.enabled ? this.buttonVariant.enabled : "light";
+  }
+
 
   splitButtonHandler(actionKey, flight) {
     this.props.onClick('bong', flight);
@@ -83,39 +83,45 @@ class MapMenuFlightItem extends React.Component {
 
     // Fixme:
     // Optimization
+    const DivS = styled.div`
+      margin-bottom: 6px;
+    `
+
+    
     const ButtonS = styled(Button)`
-      margin-right: 3px;
+      margin-left: 10px;
+      margin-right: 5px;
+      display: inline;
     `;
 
     const DropdownButtonS = styled(DropdownButton)`
-      margin-right: 20px;
+      display: inline;
+      margin-right: 10px;
     `;
 
     return(
-      <React.Fragment>
+      <DivS>
         <ButtonS
           size="sm"
-          variant={this.buttonVariant.enabled}
+          variant={this.getButtonVariant2()}
           onClick={(e) => {onMainButtonClick(e, flight)}}
         >
           {flight.pilot}
         </ButtonS>
         <DropdownButtonS
           id={index}
-          drop="up"
+          drop="down"
           variant={variant}
           size="sm"
-          title={''}
+          title=''
           disabled={! enabled}
           >
 
           <Dropdown.Item 
             onSelect={(key)=>{onClick(key, flight)}}
             eventKey="track_toggle_visible">Show</Dropdown.Item>
-
-          <Dropdown.Item eventKey="2">Circle</Dropdown.Item>
         </DropdownButtonS>
-      </React.Fragment>
+      </DivS>
     );
   }
 }

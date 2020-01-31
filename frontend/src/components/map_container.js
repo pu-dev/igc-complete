@@ -1,15 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-
+import './map_container.css';
 
 class MapContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      width: window.innerWidth, 
-      height: window.innerHeight 
-    };
-
     this.updateWrapperSize = this.updateWrapperSize.bind(this);
   }
 
@@ -24,24 +19,20 @@ class MapContainer extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState != this.state) {
-      this.props.onSizeChange();
+      this.updateWrapperSize();
     }
   }
 
   updateWrapperSize() {
-    this.setState({ 
-      width: window.innerWidth, 
-      height: window.innerHeight 
-    });
+    this.getMapContainer().style.height = `${window.innerHeight -110}px`;
+  }
+  
+  getMapContainer() {
+    return document.getElementById("map");
   }
 
   render() {
-    const Wrapper = styled.div`
-      width: 100%;
-      height: ${this.state.height-110}px;
-    `;
-
-    return <Wrapper id="map" />
+    return <div id="map" className="map-wrapper"/>
   }
 }
 

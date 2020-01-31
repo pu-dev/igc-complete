@@ -37,27 +37,24 @@ query ($pks: [Int]) {
 class ViewMap extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      reload: 0
-    }
+    // this.state = {
+    //   reload: 0
+    // }
   }
 
-  handleMapContainerSizeChange () {
-     // To force update on Leaflet map.
-     this.setState({
-      reload: this.state.reload+1,
-    });
-  }
+  // handleMapContainerSizeChange () {
+  //    // To force update on Leaflet map.
+  //    this.setState({
+  //     reload: this.state.reload+1,
+  //   });
+  // }
 
   render() {
     return (
       <React.Fragment>
         <MapReamining
-          reload={this.state.reload}
           flightsIds={this.props.flightsIds} />
-        <MapContainer 
-          onSizeChange={this.handleMapContainerSizeChange.bind(this)}
-        />
+        <MapContainer />
       </React.Fragment>
     );
   }
@@ -100,7 +97,6 @@ class MapReamining extends ViewBase {
   handleMenu(actionKey, flight) {
     this.mapDrawer.toggleTrackVisible(flight);
     // this.mapDrawer.removeTrack('');
-    console.log("bong")
   }
 
   renderReady() {

@@ -29,13 +29,15 @@ const AppNavbar = ({onNavbar}) => {
       />
     </Navbar.Brand>
 
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Nav className="mr-auto">
-        <Nav.Link href="#flights_list">Flights</Nav.Link>
-        <Nav.Link href="#flights_analysis">Analysis</Nav.Link>
-        <Nav.Link href="#flights_map">Map</Nav.Link>
-      </Nav>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+    <Navbar.Toggle />
+      <Navbar.Collapse>
+        <Nav className="mr-auto">
+          <Nav.Link href="#flights_list">Flights</Nav.Link>
+          <Nav.Link href="#flights_analysis">Analysis</Nav.Link>
+          <Nav.Link href="#flights_map">Map</Nav.Link>
+          <Nav.Link href="#test">test</Nav.Link>
+        </Nav>
+      </Navbar.Collapse>
     </Navbar>
   )
 }
