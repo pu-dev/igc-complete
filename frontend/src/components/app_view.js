@@ -3,6 +3,7 @@ const AppView = Object.freeze({
   FLIGHTS: "#flights_list",
   ANALYSIS: "#flights_analysis",
   MAP: "#flights_map",
+  ABOUT: "#about",
 
   Map: () => {
     var viewMap = new Map();

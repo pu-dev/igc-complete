@@ -2,7 +2,7 @@ import React from 'react';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 // import NavDropdown from 'react-bootstrap/NavDropdown';
-// import AppView from './app_view.js';
+import AppView from './app_view.js';
 
 
 const AppNavbar = ({onNavbar}) => {
@@ -32,10 +32,10 @@ const AppNavbar = ({onNavbar}) => {
     <Navbar.Toggle />
       <Navbar.Collapse>
         <Nav className="mr-auto">
-          <Nav.Link href="#flights_list">Flights</Nav.Link>
-          <Nav.Link href="#flights_analysis">Analysis</Nav.Link>
-          <Nav.Link href="#flights_map">Map</Nav.Link>
-          <Nav.Link href="#test">test</Nav.Link>
+          <Nav.Link href={AppView.FLIGHTS}>Flights</Nav.Link>
+          <Nav.Link href={AppView.ANALYSIS}>Analysis</Nav.Link>
+          <Nav.Link href={AppView.MAP}>Map</Nav.Link>
+          <Nav.Link href={AppView.ABOUT}>About</Nav.Link>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

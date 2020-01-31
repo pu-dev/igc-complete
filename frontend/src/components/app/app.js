@@ -6,6 +6,7 @@ import AppNavbar from '../app_navbar.js';
 import ViewMap from '../../views/view_map.js';
 import ViewFlights from '../../views/view_flight.js';
 import ViewGraph from '../../views/view_graph.js';
+import ViewAbout from '../../views/view_about.js';
 
 import Warning from '../modal.js';
 
@@ -38,10 +39,14 @@ class App extends React.Component {
     const viewGraphStats = () => <ViewGraph
         flightsIds={this.flightsIds} />
 
+    const viewAbout = () => <ViewAbout />;
+    
+
     this.viewMap = AppView.Map(this);
     this.viewMap.addView(AppView.FLIGHTS, viewFlights);
     this.viewMap.addView(AppView.MAP, viewFlightMap);
     this.viewMap.addView(AppView.ANALYSIS, viewGraphStats);
+    this.viewMap.addView(AppView.ABOUT, viewAbout);
 
   }
 
