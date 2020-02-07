@@ -115,18 +115,14 @@ class MapMenuFlightItem extends React.Component {
     `;
 
     const Pilot = styled.div`
-      display: inline;
-      padding-right: 10px;
       float: left;
+      text-align: left;
+      width: 100%;
+      padding-right: 5px;
     `;
 
     const FlightDate = styled.div`
-      display: inline;
-      position: relative;
       float: left;
-      top: 0px;
-      display: inline;
-      padding-right: 0px;
       font-size: 0.65rem;
     `
 
