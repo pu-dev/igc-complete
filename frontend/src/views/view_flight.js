@@ -11,9 +11,6 @@ query {
     date
     gliderId
     gliderType
-    stats {
-      fixesCount
-    }
   }
 }`;
 

@@ -69,7 +69,9 @@ class App extends React.Component {
   }
  
   handleNavbar(viewId) {
-    if (viewId !== AppView.FLIGHTS) {
+    const viewsWithoutFlights = [AppView.FLIGHTS, AppView.ABOUT];
+
+    if (! viewId in viewsWithoutFlights) {
       if ( ! this.isFlightsIdsSet() ) {
 
         this.warning = {
