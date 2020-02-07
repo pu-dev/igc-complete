@@ -3,7 +3,6 @@ import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
-import styled from 'styled-components';
 import './view_about.css';
 
 
@@ -39,7 +38,7 @@ class ViewAbout extends React.Component  {
         text: (
           <React.Fragment>
             Souce code is available on
-             <a target="_blank" href="https://github.com/pu-dev/igc-complete"> GitHub
+             <a target="_blank" rel="noopener noreferrer" href="https://github.com/pu-dev/igc-complete"> GitHub
              </a>. Feel free to contribute.
           </React.Fragment>
         )
@@ -73,6 +72,7 @@ class ViewAbout extends React.Component  {
         title={card.title}
         text={card.text}
         index={index}
+        key={index}
       />
     });
     return (

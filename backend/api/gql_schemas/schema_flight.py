@@ -13,15 +13,21 @@ class FixType(DjangoObjectType):
     class Meta:
         model = Fix
 
+    count = graphene.Int()
+
     f_lat = graphene.Float()
 
     f_lng = graphene.Float()
+
+    def count(parent, info):
+        return len(parent)
 
     def resolve_f_lat(self, info):
         return self.f_lat
 
     def resolve_f_lng(self, info):
         return self.f_lng
+
 
 class CircleType(graphene.ObjectType):
     diameter = graphene.Float()
@@ -55,17 +61,33 @@ class CircleType(graphene.ObjectType):
         return self.fixes
 
 
+class FlightStatsType(graphene.ObjectType):
+
+    fixes_count = graphene.Int()
+
+    def resolve_fixes_count(parent, info, **kwargs):
+        return parent.get('fixesCount')
+
+
 class FlightType(DjangoObjectType):
     class Meta:
         model = Flight
 
     circles = graphene.List(CircleType)
 
-    def resolve_circles(self, info, **kwargs):
-        # fixme:
-        fixes = Fix.objects.filter(flight__id=self.id)
+    stats = graphene.Field(FlightStatsType)
 
-        return CircleExtractor(fixes).get_circles()
+
+    def resolve_circles(parent, info, **kwargs):
+        fixes = parent.fixes.all()
+        circles = CircleExtractor(fixes).get_circles()
+        return circles
+
+    def resolve_stats(parent, info, **kwargs):
+        fixes = parent.fixes.all()
+        return dict(
+            fixesCount=len(fixes)
+        )
 
 
 
@@ -74,7 +96,8 @@ GQL queries definitions
 '''
 
 class QueryFlights:
-    flights = graphene.List(FlightType,
+    flights = graphene.List(
+        FlightType,
         pks=graphene.List(graphene.Int),
         pilots=graphene.List(graphene.String),
     )

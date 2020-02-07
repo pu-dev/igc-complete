@@ -1,11 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
 import './map_container.css';
 
 class MapContainer extends React.Component {
   constructor(props) {
     super(props);
     this.updateWrapperSize = this.updateWrapperSize.bind(this);
+    this.mapRef = React.createRef();
   }
 
   componentDidMount() {
@@ -18,21 +18,17 @@ class MapContainer extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState != this.state) {
+    if (prevState !== this.state) {
       this.updateWrapperSize();
     }
   }
 
   updateWrapperSize() {
-    this.getMapContainer().style.height = `${window.innerHeight -110}px`;
-  }
-  
-  getMapContainer() {
-    return document.getElementById("map");
+    this.mapRef.current.style.height = `${window.innerHeight-56}px`;
   }
 
   render() {
-    return <div id="map" className="map-wrapper"/>
+    return <div id="map" ref={this.mapRef} className="map-wrapper"/>
   }
 }
 

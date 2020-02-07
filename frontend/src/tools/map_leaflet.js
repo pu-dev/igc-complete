@@ -26,15 +26,19 @@ class MapLeaflet {
     }).addTo(this.map);
   }
 
-  drawTrack(track, color) {
+  drawTrack(track, color, weight=2, zoomTo=false) {
     let polyline = L.polyline(track, {
       color: color,
-      weight: 0.85,
+      weight: weight,
       opacity: 1,
     });
 
     let ret = polyline.addTo(this.map)
-    this.map.fitBounds(polyline.getBounds());
+        console.log(zoomTo)
+
+    if (zoomTo) {
+      this.map.fitBounds(polyline.getBounds());
+    }
     return ret;
   }
 

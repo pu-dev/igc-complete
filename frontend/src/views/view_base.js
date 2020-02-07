@@ -38,7 +38,6 @@ class ViewBase extends React.Component {
 
   fetchFlights(query, variables) {
     console.info("Fetching flights data. ");
-    console.log(variables)
     this.fetchGQL(Config.url.flights(), query, variables)
       .then(json => { 
         this.flightsDidLoad(json.data.flights);
@@ -55,7 +54,7 @@ class ViewBase extends React.Component {
   }
 
   render() {
-    if ((this.state == null) || (this.state.renderReady != true )) {
+    if ((this.state === null) || (this.state.renderReady !== true )) {
       return <Loading />;
     }
 

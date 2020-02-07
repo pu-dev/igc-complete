@@ -1,45 +1,74 @@
 import React from 'react';
 import styled from 'styled-components';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
+// import Nav from 'react-bootstrap/Nav';
+// import Navbar from 'react-bootstrap/Navbar';
 // import NavDropdown from 'react-bootstrap/NavDropdown';
 // import AppView from './app_view.js';
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+// import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
-import SplitButton from 'react-bootstrap/SplitButton';
-import Button from 'react-bootstrap/Button';
+// import SplitButton from 'react-bootstrap/SplitButton';
+// import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+// import SideMenu from './side_menu.js';
 
-import SideMenu from './side_menu.js';
 
-const MapMenu = ({onClick, flights, onNavbar}) => {
-  const handleClick = (actionKey, flight) => {
-    console.log(actionKey, flight);
-    onClick(actionKey, flight);
-  }
+class MapMenu extends React.Component {
+  render() {
+    const onClick = this.props.onClick;
+    // const onNavbar = this.props.onNavbar;
 
-  const items = flights.map((flight, index) => {
+    const handleClick = (actionKey, flight) => {
+      onClick(actionKey, flight);
+    }
+
+    const flights = this.props.flights;
+    const items = flights.map((flight, index) => {
+
+      return (
+        <MapMenuFlightItem 
+          flight={flight} 
+          key={index}
+          index={index}
+          onClick={handleClick}
+        />
+      )
+    });
+
+
+    const Container = styled.div`
+      height: 100%;
+      width: 100%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 1000;
+      top: 65px;
+      left: 10px;
+      transition: 0.5s;
+    `;
+
+    const DropdownButtonS = styled(DropdownButton)`
+      pointer-events: auto;
+      outline:0;
+      width: 0px;
+      height: auto;
+
+      margin: 0px;
+      padding: 0px;
+    `;
 
     return (
-      <MapMenuFlightItem 
-        flight={flight} 
-        key={index}
-        index={index}
-        onClick={handleClick}
-      />
-    )
-  });
-
-  return (
-    <SideMenu 
-      width="150px"
-    >
-      <ButtonToolbar>
-        {items}
-      </ButtonToolbar>
-    </SideMenu>
-  )
+      <Container>
+        <DropdownButtonS variant="primary" title="Flights" drop="right">
+          <ButtonGroup vertical>
+            {items}
+          </ButtonGroup>
+        </DropdownButtonS>
+      </Container>
+    );
+  }
 }
+
 
 class MapMenuFlightItem extends React.Component {
   constructor(props) {
@@ -49,80 +78,83 @@ class MapMenuFlightItem extends React.Component {
       enabled: true,
     }
 
-    this.buttonVariant = {
-      disabled: "outline-secondary",
-      enabled: "success"
-    }
+    // this.buttonVariant = {
+    //   disabled: "outline-secondary",
+    //   enabled: "success"
+    // }
   }
 
-  getButtonVariant() {
-    return this.state.enabled ? this.buttonVariant.enabled : this.buttonVariant.disabled;
-  }
+  // getButtonVariant() {
+  //   return this.state.enabled ? this.buttonVariant.enabled : this.buttonVariant.disabled;
+  // }
 
-  getButtonVariant2() {
-    return this.state.enabled ? this.buttonVariant.enabled : "light";
-  }
+  // getButtonVariant2() {
+  //   return this.state.enabled ? this.buttonVariant.enabled : "light";
+  // }
 
 
-  splitButtonHandler(actionKey, flight) {
-    this.props.onClick('bong', flight);
+  // splitButtonHandler(actionKey, flight) {
+  //   this.props.onClick('track_toggle_visible', flight);
 
-    this.setState({
-      enabled: ! this.state.enabled
-    });
-  }
+  //   this.setState({
+  //     enabled: ! this.state.enabled
+  //   });
+  // }
 
   render() {
     const onClick = this.props.onClick;
-    const onMainButtonClick = this.splitButtonHandler.bind(this);
+    // const onMainButtonClick = this.splitButtonHandler.bind(this);
 
     const flight = this.props.flight;
-    const index = this.props.index;
-    const variant = this.getButtonVariant();
-    const enabled = this.state.enabled;
+    // const index = this.props.index;
+    // const variant = this.getButtonVariant();
+    // const enabled = this.state.enabled;
 
-    // Fixme:
-    // Optimization
     const DivS = styled.div`
-      margin-bottom: 6px;
+      display: inline;
+    `;
+
+    const Pilot = styled.div`
+      display: inline;
+      padding-right: 10px;
+    `;
+
+    const FlightDate = styled.div`
+      display: inline;
+      position: relative;
+      float: left;
+      top: 0px;
+      display: inline;
+      padding-right: 0px;
+      font-size: 0.65rem;
     `
 
-    
-    const ButtonS = styled(Button)`
-      margin-left: 10px;
-      margin-right: 5px;
-      display: inline;
-    `;
-
-    const DropdownButtonS = styled(DropdownButton)`
-      display: inline;
-      margin-right: 10px;
-    `;
 
     return(
-      <DivS>
-        <ButtonS
-          size="sm"
-          variant={this.getButtonVariant2()}
-          onClick={(e) => {onMainButtonClick(e, flight)}}
-        >
-          {flight.pilot}
-        </ButtonS>
-        <DropdownButtonS
-          id={index}
-          drop="down"
-          variant={variant}
-          size="sm"
-          title=''
-          disabled={! enabled}
-          >
+      <DropdownButton 
+        variant="light"
+        as={ButtonGroup} 
+        title={
+          <DivS>
+            <Pilot>{flight.pilot}</Pilot>
+            <FlightDate>{flight.date}</FlightDate>
+          </DivS>}
+        drop="right"
+      > 
+        
+      <Dropdown.Item 
+        onSelect={(key)=>{onClick(key, flight)}}
+        eventKey="track_toggle_visible">
+        Toggle track
+      </Dropdown.Item>
 
-          <Dropdown.Item 
-            onSelect={(key)=>{onClick(key, flight)}}
-            eventKey="track_toggle_visible">Show</Dropdown.Item>
-        </DropdownButtonS>
-      </DivS>
-    );
+      <Dropdown.Item 
+        onSelect={(key)=>{onClick(key, flight)}}
+        eventKey="circles_toggle_visible">
+        Toggle circles
+      </Dropdown.Item>
+     </DropdownButton>
+    )
   }
 }
 

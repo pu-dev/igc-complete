@@ -1,13 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
 import ViewBase from './view_base.js';
-
-// import Loading from '../items/loading.js';
 import MapContainer from '../components/map_container.js';
 import MapMenu from '../components/map_menu.js';
 import MapDrawer from '../tools/map_drawer.js';
 import MapLeaflet from '../tools/map_leaflet.js';
-
 
 const GqlQuery = `
 query ($pks: [Int]) {
@@ -25,8 +21,11 @@ query ($pks: [Int]) {
     }
     circles {
       fixes {
+        id
         lat
         lng
+        fLat
+        fLng
       }
     }
   }
@@ -35,13 +34,6 @@ query ($pks: [Int]) {
 
 
 class ViewMap extends React.Component {
-  constructor(props) {
-    super(props);
-    // this.state = {
-    //   reload: 0
-    // }
-  }
-
   // handleMapContainerSizeChange () {
   //    // To force update on Leaflet map.
   //    this.setState({
@@ -88,14 +80,34 @@ class MapReamining extends ViewBase {
 
   flightsDidLoad(flights) {
     this.mapDrawer = new MapDrawer(new MapLeaflet());
+
     this.mapDrawer.drawFlights(flights);
+    // this.mapDrawer.drawFlightsCircles(flights);
+
     this.setState({
       flights: flights,
       renderReady: true});
   }
 
-  handleMenu(actionKey, flight) {
-    this.mapDrawer.toggleTrackVisible(flight);
+  handleMenuClick(actionKey, flight) {
+    let actionMap = {};
+
+    actionMap.track_toggle_visible = ( () => {
+      this.mapDrawer.toggleFlightVisible(flight);
+    });
+
+    actionMap.circles_toggle_visible = ( () => {
+      this.mapDrawer.toggleCirclesVisible(flight);
+    });
+
+    if (actionKey in actionMap) {
+      actionMap[actionKey]();
+    }
+    else {
+      throw(Error(`${actionKey} not defined`));
+    }
+
+
     // this.mapDrawer.removeTrack('');
   }
 
@@ -104,7 +116,7 @@ class MapReamining extends ViewBase {
     return (
       <MapMenu 
         flights={flights} 
-        onClick={this.handleMenu.bind(this)}
+        onClick={this.handleMenuClick.bind(this)}
       />
     )
   }

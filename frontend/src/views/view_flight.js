@@ -11,8 +11,12 @@ query {
     date
     gliderId
     gliderType
+    stats {
+      fixesCount
+    }
   }
 }`;
+
 
 class ViewFlights extends ViewBase {
   componentDidMount() {

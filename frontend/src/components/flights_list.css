@@ -3,18 +3,23 @@
   display: inline-block;
 }
 
-.flight-date  {
+.flight-date {
   width: 110px;
   display: inline-block;
 }
 
-.flight-glider-type  {
+.flight-glider-type {
   width: 160px;
   display: inline-block;
 }
 
-.flight-glider-id  {
+.flight-glider-id {
   width: 100px;
+  display: inline-block;
+}
+
+.flight-fixes-count {
+  width: 40px;
   display: inline-block;
 }
 
