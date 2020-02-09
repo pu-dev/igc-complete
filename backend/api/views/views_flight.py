@@ -19,8 +19,7 @@ class FlighUploadView(views.APIView):
     serializer_class = serializers_igc.FlightCreateSerializer
 
     def post(self, request, format=None):
-        file = request.data.get('file')
-
+        file = request.body.decode('utf-8').split('\r\n')
         igc = IGC(file)
 
         igc_data = {}

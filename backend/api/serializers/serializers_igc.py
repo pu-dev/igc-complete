@@ -64,6 +64,9 @@ class FlightCreateSerializer(serializers.ModelSerializer):
             fix['flight_id']=flight.id
             models_flight.Fix.objects.create(**fix)
 
+        flight.loaded = True
+        flight.save()
+
         return flight
 
 

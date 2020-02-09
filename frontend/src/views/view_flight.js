@@ -5,7 +5,7 @@ import './view_flight.css';
 
 const GqlQuery = `
 query {
-  flights {
+  flights (loaded: true) {
     id
     pilot
     date

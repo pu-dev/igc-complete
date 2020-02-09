@@ -10,9 +10,13 @@ class Flight(models.Model):
 
     glider_type = models.CharField(max_length=32, blank=True, default="")
 
+    loaded = models.BooleanField(default=False)
+
     class Meta:
         ordering = ['-date']
 
+    def __str__(self):
+        return 'date:{} pilot:{} loaded:{}'.format(self.date, self.pilot, self.fully_loaded)
 
 class Fix(models.Model):
     class Valid(models.TextChoices):

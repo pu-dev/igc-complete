@@ -1,6 +1,7 @@
 const AppView = Object.freeze({
   
   FLIGHTS: "#flights_list",
+  FLIGHT_UPLOAD: "#flight_upload",
   ANALYSIS: "#flights_analysis",
   MAP: "#flights_map",
   ABOUT: "#about",

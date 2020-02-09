@@ -5,6 +5,7 @@ import AppNavbar from '../app_navbar.js';
 
 import ViewMap from '../../views/view_map.js';
 import ViewFlights from '../../views/view_flight.js';
+import ViewFlightUpload from '../../views/view_flight_upload.js';
 import ViewGraph from '../../views/view_graph.js';
 import ViewAbout from '../../views/view_about.js';
 
@@ -33,6 +34,9 @@ class App extends React.Component {
     const viewFlights = () => <ViewFlights 
       onFlightsSelected={this.handleFlightsSelected.bind(this)} />;
 
+    const viewFlightUpload = () => <ViewFlightUpload 
+      onFlightUploaded={this.handleFlightUploaded.bind(this)} />;
+
     const viewFlightMap = () => <ViewMap
         flightsIds={this.flightsIds} />;
 
@@ -44,6 +48,7 @@ class App extends React.Component {
 
     this.viewMap = AppView.Map(this);
     this.viewMap.addView(AppView.FLIGHTS, viewFlights);
+    this.viewMap.addView(AppView.FLIGHT_UPLOAD, viewFlightUpload);
     this.viewMap.addView(AppView.MAP, viewFlightMap);
     this.viewMap.addView(AppView.ANALYSIS, viewGraphStats);
     this.viewMap.addView(AppView.ABOUT, viewAbout);
@@ -54,6 +59,13 @@ class App extends React.Component {
     this.flightsIds = flightsIds;
     // this.setState({
     //   view: AppView.ANALYSIS});
+  }
+
+  handleFlightUploaded(flightId) {
+    this.flightsIds = [flightId];
+    this.setState({
+      view: AppView.ANALYSIS
+    });
   }
 
   isFlightsIdsSet() {
@@ -69,7 +81,9 @@ class App extends React.Component {
   }
  
   handleNavbar(viewId) {
-    const viewsWithoutFlights = [AppView.FLIGHTS, AppView.ABOUT];
+    const viewsWithoutFlights = [
+      AppView.FLIGHTS, AppView.FLIGHT_UPLOAD, AppView.ABOUT];
+
     if (! viewsWithoutFlights.includes(viewId)) {
       if ( ! this.isFlightsIdsSet() ) {
 
@@ -109,7 +123,8 @@ class App extends React.Component {
 
     return (
       <React.Fragment>
-        <AppNavbar onNavbar={this.handleNavbar.bind(this)}/>
+        <AppNavbar 
+          onNavbar={this.handleNavbar.bind(this)}/>
         {view}
         {warning}
       </React.Fragment>

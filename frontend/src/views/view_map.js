@@ -7,7 +7,7 @@ import MapLeaflet from '../tools/map_leaflet.js';
 
 const GqlQuery = `
 query ($pks: [Int]) {
-  flights(pks: $pks) {
+  flights(pks: $pks, loaded: true) {
     id
     pilot
     date

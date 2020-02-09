@@ -1,3 +1,4 @@
+from django.db.models import Q
 import graphene
 from graphene_django import DjangoObjectType
 from gliding.circle.extractor import CircleExtractor
@@ -98,27 +99,33 @@ GQL queries definitions
 class QueryFlights:
     flights = graphene.List(
         FlightType,
+        loaded=graphene.Boolean(),
         pks=graphene.List(graphene.Int),
         pilots=graphene.List(graphene.String),
     )
 
     def resolve_flights(self, info, **kwargs):
-       
+        # Everything
+        filters = Q(id__gt=0)
+
+        # Get flights which finished loading        
+        loaded = kwargs.get('loaded')
+        if loaded is not None:
+            filters = filters & Q(loaded=loaded)
+
+        # Filter by id's
         pks = kwargs.get('pks')
         if pks:
-            return [Flight.objects.get(id=pk) for pk in pks]
+            pks_filters = None
+            for pk in pks:
+                if pks_filters:
+                    pks_filters = pks_filters | Q(id=pk)
+                else:
+                    pks_filters = Q(id=pk)
 
-        pilots = kwargs.get('pilots')
-        if pilots:
-            flights = []
-            for pilot in pilots:
-                tmp_flights = Flight.objects.all().filter(pilot=pilot)
-                for flight in tmp_flights:
-                    flights.append(flight)
-            return flights
+            filters = filters & pks_filters
 
-        # return None
-        return Flight.objects.all()
+        return Flight.objects.all().filter(filters)
 
 
 class Query(QueryFlights, graphene.ObjectType):

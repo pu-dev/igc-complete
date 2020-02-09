@@ -193,6 +193,9 @@ class IGC:
         }
 
         for record in igc_data:
+            if len(record) == 0:
+                continue
+                
             if isinstance(record, bytes):
                 try:
                     record = record.decode('utf-8')

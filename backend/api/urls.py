@@ -14,7 +14,7 @@ urlpatterns = [
 
     # path('flights/', views_flight.FlightHeaderListView.as_view()),
 
-    path('flights/<int:pk>/', views_flight.FlightGetView.as_view()),
+    # path('flights/<int:pk>/', views_flight.FlightGetView.as_view()),
 
     # re_path(
     #     r'^flights/(?P<pks>([0-9]+/){1,})analysis/$', 
