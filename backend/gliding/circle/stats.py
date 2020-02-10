@@ -161,22 +161,39 @@ class StatsDisplayer:
     LABELS = dict(
         stats_mean=dict(
             info="Minimum, average and maximum.",
-            diameter_calculated=dict(
-                info="Mininum, average and maximum circle diameter among all circles.",
+
+            default=dict(
+                info="Mininum, average and maximum __PROPERTY_NAME__ among all circles.",
                 info_long="",
                 x_axis_legend="",
-                y_axis_legend="circle diameter"
+                y_axis_legend="__PROPERTY_NAME__"
             ),
-            vario_average=dict(
-                info="Infor for diameterd",
-                sub="bong",
-                x_axis_legend="mean",
-                y_axis_legend="mean"
-            ),
+
+            # Default can be overwrite
+            #
+            # diameter_calculated=dict(
+            #     info="Mininum, average and maximum circle diameter among all circles.",
+            #     info_long="",
+            #     x_axis_legend="",
+            #     y_axis_legend="circle diameter"
+            # ),
+
         ),
 
         stats_ranges_count=dict(
             info="Value distribution.",
+
+            default=dict(
+                info="Number of circles with __PROPERTY_NAME__ within a specific range.",
+                info_long=(
+                    "If __PROPERTY_NAME__ is within "
+                    "specific range (X axis), value for this range "
+                    "(Y axis) is increased by one. "
+                ),
+                x_axis_legend="__PROPERTY_NAME__ ranges (__PROPERTY_UNITS__)",
+                y_axis_legend="__PROPERTY_NAME__ count"
+            ),
+
             diameter_calculated=dict(
                 info="Number of circles with diameters within a specific diameter range.",
                 info_long=(
@@ -187,17 +204,24 @@ class StatsDisplayer:
                 x_axis_legend="circle diameter ranges (meters)",
                 y_axis_legend="circles diameters count"
             ),
-            vario_average=dict(
-                info="Infor for diameterd",
-                sub="bong",
-                x_axis_legend="mean",
-
-                y_axis_legend="mean"
-            ),
         ),
 
         stats_ranges_count_weighted=dict(
             info="Weighted value distribution.",
+
+            default=dict(
+                info="Percentage of all circles with __PROPERTY_NAME__ within a specific range.",
+                info_long=(
+                    "If __PROPERTY_NAME__ is within "
+                    "specific range (X axis), value for this range "
+                    "is increased by one. Then for each range, "
+                    "amount of circles from that range is devided by the "
+                    "total amount of circles, and multiply by 100 (Y axis)."
+                ),
+                x_axis_legend="__PROPERTY_NAME__ ranges (__PROPERTY_UNITS__)",
+                y_axis_legend="__PROPERTY_NAME__ percentage"
+            ),
+
             diameter_calculated=dict(
                 info="Percentage of all circles with diameters within a specific diameter range.",
                 info_long=(
@@ -210,16 +234,24 @@ class StatsDisplayer:
                 x_axis_legend="circle diameter ranges (meters)",
                 y_axis_legend="circle diameters percentage"
             ),
-            vario_average=dict(
-                info="Infor for diameterd",
-                sub="bong",
-                x_axis_legend="mean",
-                y_axis_legend="mean"
-            ),
+           
         ),
 
         stats_ranges_mean_value=dict(
             info="Mean value distribution.",
+            
+            default=dict(
+                info="Average value of __PROPERTY_NAME__ within a specific range.",
+                info_long=(
+                    "For each circle, find range (Y axis) which matches circle __PROPERTY_NAME__. "
+                    "Then add value of circle __PROPERTY_NAME__ to the value of the "
+                    "current value of the found range. Then for each range, devide "
+                    "its value by the amount circles which matched this range. "
+                ),
+                x_axis_legend="__PROPERTY_NAME__ ranges (__PROPERTY_UNIT__)",
+                y_axis_legend="__PROPERTY_NAME__ mean value (__PROPERTY_UNIT__)"
+            ),
+
             diameter_calculated=dict(
                 info="Average value of a circle diameter within a specific range.",
                 info_long=(
@@ -231,13 +263,6 @@ class StatsDisplayer:
                 x_axis_legend="circle diameter ranges (meters)",
                 y_axis_legend="circle diameter mean value (in meters)"
             ),
-            vario_average=dict(
-                info="Infor for diameterd",
-                sub="bong",
-                x_axis_legend="mean",
-                y_axis_legend="mean"
-            ),
-
         )
     )
 
@@ -260,11 +285,28 @@ class StatsDisplayer:
 
     @property
     def labels(self):
-        labels = dict(
+
+        labels = self.LABELS
+
+        for stat_name, stat_labels in self.LABELS.items():
+            for stat_def in STATS_DEFINITION:
+                stat_property = stat_def.get('property')
+                stat_property_text = stat_def.get('display_text')
+                stat_property_units = stat_def.get('units')
+
+                if stat_property not in labels.get(stat_name):
+                    labels.get(stat_name)[stat_property] = labels.get(stat_name).get('default').copy()
+
+                    stat_property_label = labels.get(stat_name)[stat_property]
+                    for key in stat_property_label:
+                        stat_property_label[key] = stat_property_label[key].replace('__PROPERTY_NAME__', stat_property_text.lower())
+                        stat_property_label[key] = stat_property_label[key].replace('__PROPERTY_UNITS__', stat_property_units)
+
+        all_labels = dict(
             properties=self.__get_property_labels()
         )
-        labels.update(self.LABELS)
-        return labels
+        all_labels.update(self.LABELS)
+        return all_labels
 
     @property
     def flight_descriptor(self):

@@ -124,7 +124,9 @@ class App extends React.Component {
     return (
       <React.Fragment>
         <AppNavbar 
-          onNavbar={this.handleNavbar.bind(this)}/>
+          onNavbar={this.handleNavbar.bind(this)}
+          flightsSelected={true}
+        />
         {view}
         {warning}
       </React.Fragment>

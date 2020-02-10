@@ -1,4 +1,5 @@
 import React from 'react';
+import Cache from '../tools/cache.js';
 import ViewBase from './view_base.js';
 import FlightsList from '../components/flights_list.js';
 import './view_flight.css';
@@ -14,10 +15,16 @@ query {
   }
 }`;
 
+const CacheItemName = 'flight_list';
 
 class ViewFlights extends ViewBase {
   componentDidMount() {
-    this.fetchFlights(GqlQuery);
+    if (Cache.has(CacheItemName)) {
+      this.flightsReady();
+    }
+    else {
+      this.fetchFlights(GqlQuery);
+    }
   }
 
   handleFlightsSelected(ids) {
@@ -25,8 +32,13 @@ class ViewFlights extends ViewBase {
   }
 
   flightsDidLoad(flights) {
+    Cache.set(CacheItemName, flights);
+    this.flightsReady();
+  }
+
+  flightsReady() {
     this.setState({
-      flights: flights,
+      flights: Cache.get(CacheItemName),
       renderReady: true
     });
   }

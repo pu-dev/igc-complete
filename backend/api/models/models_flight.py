@@ -16,7 +16,7 @@ class Flight(models.Model):
         ordering = ['-date']
 
     def __str__(self):
-        return 'date:{} pilot:{} loaded:{}'.format(self.date, self.pilot, self.fully_loaded)
+        return 'date:{} pilot:{} loaded:{}'.format(self.date, self.pilot, self.loaded)
 
 class Fix(models.Model):
     class Valid(models.TextChoices):

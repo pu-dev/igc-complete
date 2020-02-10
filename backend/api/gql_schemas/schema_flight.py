@@ -39,6 +39,8 @@ class CircleType(graphene.ObjectType):
 
     vario_average = graphene.Float()
 
+    speed = graphene.Float()
+
     fixes_count = graphene.Int()
 
     fixes = graphene.List(FixType)
@@ -54,6 +56,9 @@ class CircleType(graphene.ObjectType):
 
     def resolve_vario_average(self, info, **kwargs):
         return self.vario_average
+
+    def resolve_speed(self, info, **kwargs):
+        return self.speed
 
     def resolve_fixes_count(self, info, **kwargs):
         return self.fixes_count

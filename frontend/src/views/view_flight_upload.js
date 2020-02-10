@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Config from '../config.js';
 import Spinner from '../components/items/spinner.js';
 import ViewBase from './view_base.js';
+import Warning from '../modal.js';
 
 
 class ViewFlightUpload extends ViewBase {
@@ -35,10 +36,10 @@ class ViewFlightUpload extends ViewBase {
       return flight;
     })
     .catch(function(error) {
-      this.setState({
-        uploading:false
-      });
-      console.error('Error while feching notes: ', error)
+      console.error("Error while uploading file: ", error);
+      // this.setState({
+        // uploading:false
+      // });
     });
 
     return uploadPromis;

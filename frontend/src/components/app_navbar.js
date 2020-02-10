@@ -9,7 +9,6 @@ const AppNavbar = ({onNavbar, flightsSelected}) => {
   const handleSelect = viewId => {
     onNavbar(viewId);
   }
-  flightsSelected = true;
   
   return (
     <Navbar 
@@ -20,7 +19,7 @@ const AppNavbar = ({onNavbar, flightsSelected}) => {
       onSelect={handleSelect}
     >
 
-    <Navbar.Brand href={AppView.FLIGHTS}>
+    <Navbar.Brand href={AppView.FLIGHTS} onClick={() => { handleSelect(AppView.FLIGHTS)}}>
       <img
         src={process.env.PUBLIC_URL + '/img/logo-glider.png'}
         width="30"

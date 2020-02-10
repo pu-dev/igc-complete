@@ -77,6 +77,13 @@ class Circle:
         return self.height_delta / self.time_total
 
     @property
+    def speed(self):
+        mps_to_kph = 3.6
+        speed = ( self.distance / self.time_total ) * mps_to_kph
+        return round(speed, 1)
+
+
+    @property
     def fixes_count(self):
         return len(self.fixes)
 

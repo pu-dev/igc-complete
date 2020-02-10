@@ -74,6 +74,8 @@ class Coords:
         return d_bearing;
 
     def get_distance(self, dst):
+        '''Distance in meters'''
+        
         distance = {}
         
         #
