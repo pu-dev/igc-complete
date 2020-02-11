@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import Config from '../config.js';
 import Spinner from '../components/items/spinner.js';
 import ViewBase from './view_base.js';
-import Warning from '../modal.js';
-
+import Warning from '../components/modal.js';
+import Cache from '../tools/cache.js';
 
 class ViewFlightUpload extends ViewBase {
   constructor(props) {
@@ -29,6 +29,7 @@ class ViewFlightUpload extends ViewBase {
     })
     .then(response => response.json())
     .then(flight => {
+      Cache.flush(Cache.__flight_list);
       this.setState({
         uploading:false
       });

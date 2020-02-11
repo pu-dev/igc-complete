@@ -4,26 +4,28 @@ import ViewBase from './view_base.js';
 import FlightsList from '../components/flights_list.js';
 import './view_flight.css';
 
-const GqlQuery = `
-query {
-  flights (loaded: true) {
-    id
-    pilot
-    date
-    gliderId
-    gliderType
-  }
-}`;
-
-const CacheItemName = 'flight_list';
 
 class ViewFlights extends ViewBase {
+
+  static CacheItemName = 'flight_list';
+
+  static GqlQuery = `
+    query {
+      flights (loaded: true) {
+        id
+        pilot
+        date
+        gliderId
+        gliderType
+      }
+    }`;
+
   componentDidMount() {
-    if (Cache.has(CacheItemName)) {
+    if (Cache.has(Cache.__flight_list)) {
       this.flightsReady();
     }
     else {
-      this.fetchFlights(GqlQuery);
+      this.fetchFlights(ViewFlights.GqlQuery);
     }
   }
 
@@ -32,13 +34,13 @@ class ViewFlights extends ViewBase {
   }
 
   flightsDidLoad(flights) {
-    Cache.set(CacheItemName, flights);
+    Cache.set(Cache.__flight_list, flights);
     this.flightsReady();
   }
 
   flightsReady() {
     this.setState({
-      flights: Cache.get(CacheItemName),
+      flights: Cache.get(Cache.__flight_list),
       renderReady: true
     });
   }
