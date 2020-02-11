@@ -1,12 +1,11 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import styled from 'styled-components';
 import Config from '../config.js';
 import Spinner from '../components/items/spinner.js';
 import ViewBase from './view_base.js';
-import Warning from '../components/modal.js';
 import Cache from '../tools/cache.js';
+
 
 class ViewFlightUpload extends ViewBase {
   constructor(props) {

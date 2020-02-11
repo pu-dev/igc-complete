@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'drf_yasg',
+
     'corsheaders',
 ]
 
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    # 'corsheaders.middleware.CorsPostCsrfMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -170,10 +172,9 @@ DEVELOPMENT = {
     
 }
 
-# CORS_ORIGIN_WHITELIST = (
-#     'http://localhost:3000',
-#     'http://192.168.8.100:3000',
-#     'http://localhost:5000',
-#     'http://local:5000',
 
-# )
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ORIGIN_REGEX_WHITELIST = [
+    r"^http://localhost:3000$",
+]
