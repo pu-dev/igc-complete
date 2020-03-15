@@ -15,11 +15,16 @@ logger = logging.getLogger(__name__)
 
 
 class FlighUploadView(views.APIView):
-    parser_classes = (parsers.FileUploadParser, )
+    # parser_classes = (parsers.FileUploadParser, )
+    # Another way of doing it, but more hasel. 
+    # MultiPartParser is just simpler.
+    parser_classes = (parsers.MultiPartParser,)
     serializer_class = serializers_igc.FlightCreateSerializer
 
     def post(self, request, format=None):
-        file = request.body.decode('utf-8').split('\r\n')
+        files = request.FILES # not sure why it is 'FILES'
+        file = files.get('data')  # create file like in memory structure
+
         igc = IGC(file)
 
         igc_data = {}

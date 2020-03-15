@@ -1,6 +1,10 @@
 import logging
 import re
 
+
+logger = logging.getLogger(__name__)
+
+
 class IGCPart:
     """
     Base class for all classes which represents certain IGC file sections. 
@@ -15,7 +19,6 @@ class Header(IGCPart):
     Composes IGC header out of IGC H-records.
     """
 
-    logger = logging.getLogger(__name__)
 
 
     attr_mnemonic = {
@@ -31,6 +34,7 @@ class Header(IGCPart):
     
     pattern_with_colon = re.compile(r'H(?P<source>[A-Z])(?P<mnemonic>[A-Z]{3}).*:(?P<value>[\d\w -]+)')
     pattern_no_colon = re.compile(r'H(?P<source>[A-Z])(?P<mnemonic>[A-Z]{3})(?P<value>[\d\w -]+)')
+
 
     def __init__(self):
         self.attr_value = {}
@@ -56,7 +60,7 @@ class Header(IGCPart):
     def add_record(self, record):
         mnemonic = record[2:5]
         if mnemonic not in self.attr_mnemonic:
-            self.logger.warning(
+            logger.warning(
                 "no mapping for mnemonic: {}, "
                 "raw record: {}".format(mnemonic, record))
             return
@@ -66,7 +70,7 @@ class Header(IGCPart):
             matched = self.pattern_no_colon.match(record)
 
         if matched is None:
-            self.logger.warning(
+            logger.warning(
                 "Found mnemonic: {},"
                 "but failed to process raw record: {}".format(mnemonic, record))
             return
@@ -178,29 +182,47 @@ class IGC:
     Class representation of processed IGC data.
     """
 
-    logger = logging.getLogger(__name__)
-
-
-    def __init__(self, igc_data):
+    def __init__(self, igc_file):
         self.__header = Header()
         self.__track = Track()
-        self.__parse(igc_data)
+        self.__parse(igc_file)
 
-    def __parse(self, igc_data):
+
+    def __get_encoding(self, igc_file):
+        codes = ('utf-8', 'iso-8859-2')
+        content = igc_file.read()
+
+        for codec in codes:
+            try:
+                content.decode(codec)
+                logger.info(f'Codec: {codec} found for IGC file: {igc_file.name}')
+                return codec
+            except UnicodeDecodeError as ex:
+                pass
+ 
+        logger.error(
+            'Could not find suitable codec to decode whole IGC file. '
+            f'Filename: {igc_file.name}')
+        return 'utf-8'
+
+
+    def __parse(self, igc_file):
         obj_map = {
             'H' : self.header,
             'B' : self.track
         }
 
-        for record in igc_data:
+        encoding = self.__get_encoding(igc_file)
+
+        for record in igc_file:
             if len(record) == 0:
                 continue
                 
             if isinstance(record, bytes):
                 try:
-                    record = record.decode('utf-8')
+                    record = record.decode(encoding)
                 except Exception as ex:
-                    self.logger.error(
+                    logger.error(
                         'Failed to decode line: {}. '
                         'Exception: {}.'.format(record, ex)
                     )
@@ -211,7 +233,7 @@ class IGC:
             if record_type in obj_map:
                 obj_map.get(record_type).add_record(record) 
             else:
-                self.logger.warning(
+                logger.warning(
                     "Unknown IGC record type: {}, "
                     "raw record: {}".format(record_type, record))
 
