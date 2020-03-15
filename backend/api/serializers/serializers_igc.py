@@ -57,13 +57,16 @@ class FlightCreateSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        fixes = validated_data.pop('fixes')
+        fixes_data = validated_data.pop('fixes')
         flight = models_flight.Flight.objects.create(**validated_data)
 
-        for fix in fixes:
-            fix['flight_id']=flight.id
-            models_flight.Fix.objects.create(**fix)
+        fixes_obj = [None] * len(fixes_data)
 
+        for i in range(len(fixes_data)):
+            fix_data = fixes_data[i]
+            fixes_obj[i] = models_flight.Fix(**fix_data, flight_id=flight.id)
+
+        models_flight.Fix.objects.bulk_create(fixes_obj)
         flight.loaded = True
         flight.save()
 
