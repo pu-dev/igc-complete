@@ -21,10 +21,15 @@ class ViewFlightUpload extends ViewBase {
 
   uploadFile(file) {
     const url= Config.url.flightUpload();
-  
+  const formData = new FormData()
+  formData.append(
+    'data',  // Not important
+    file,
+    file.name)
+
     const uploadPromis = fetch(url, {
       method: 'POST',
-      body: file,
+      body: formData,
     })
     .then(response => response.json())
     .then(flight => {
