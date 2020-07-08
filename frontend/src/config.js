@@ -6,14 +6,14 @@ class Config {
     const backend = () => 'http://glide.3o3.it/backend_igc/api/1.0'
     // const backend = () => 'http://localhost:7000/api/1.0'
     const flights = () => `${backend()}/gql/flights/`;
-    const flight = (id) => `${backend()}/flights/${id}/`;
+    // const flight = (id) => `${backend()}/flights/${id}/`;
     const flightUpload = () => `${backend()}/upload/`;
     const flightAnalysis = (id) => `${backend()}/flights/${id}/analysis/`;
 
     return {
       backend,
       flights,
-      flight,
+      // flight,
       flightUpload,
       flightAnalysis,
     };

@@ -14,6 +14,7 @@ export class SideMenu extends React.Component {
   componentDidMount() {
     this.getMenu().style.left = `-${this.width}`;
     this.getMenu().style.width = this.width;
+    this.openNav();
   }
 
   openNav() {

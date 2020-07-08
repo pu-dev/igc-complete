@@ -121,6 +121,7 @@ const GraphGroups = analysis => {
     const labels = ((stat) => {
       const sub_title = analysis.labels[stat].info;
       var tmp = analysis.labels[stat][prop];
+
       tmp.title = title;
       tmp.sub_title = sub_title;
       return tmp;
